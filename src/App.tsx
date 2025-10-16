@@ -1,7 +1,7 @@
 import { useLocation } from "wouter";
 
 function App() {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
 
   const handleClientEmployeeCarsClick = () => {
     setLocation("/clients-employees-cars");
