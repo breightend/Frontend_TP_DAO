@@ -1,29 +1,29 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { createClient } from "../../services/clientService";
+import { createAuto } from "../../services/autosService";
 
 export default function createModal() {
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellido: "",
-    dni: "",
-    email: "",
-    telefono: "",
+    marca : "",
+    modelo : "",
+    anio : "",
+    color : "",
+    patente : "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      createClient(formData);
+      createAuto(formData);
     } catch (error) {
-      console.error("Error creating client:", error);
+      console.error("Error creating auto:", error);
     }
-  };
+  }
 
   return (
     <>
@@ -37,7 +37,7 @@ export default function createModal() {
       </button>
       <dialog id="modal_cliente" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Agregar Cliente</h3>
+          <h3 className="font-bold text-lg">Agregar auto</h3>
 
           <form className="py-4">
             <div className="form-control w-full mb-4">
@@ -46,66 +46,66 @@ export default function createModal() {
               </label>
               <input
                 type="text"
-                name="nombre"
-                value={formData.nombre}
+                name="marca"
+                value={formData.marca}
                 onChange={handleChange}
-                placeholder="Ingrese el nombre"
+                placeholder="Ingrese la marca"
                 className="input input-bordered w-full"
               />
             </div>
 
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">Apellido</span>
+                <span className="label-text">Modelo</span>
               </label>
               <input
                 type="text"
-                name="apellido"
-                value={formData.apellido}
+                name="modelo"
+                value={formData.modelo}
                 onChange={handleChange}
-                placeholder="Ingrese el apellido"
+                placeholder="Ingrese el modelo"
                 className="input input-bordered w-full"
               />
             </div>
 
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">DNI</span>
+                <span className="label-text">Fecha de fabricación</span>
               </label>
               <input
                 type="text"
-                name="dni"
-                value={formData.dni}
+                name="anio"
+                value={formData.anio}
                 onChange={handleChange}
-                placeholder="Ingrese el DNI"
+                placeholder="Ingrese el año"
                 className="input input-bordered w-full"
               />
             </div>
 
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">Email</span>
+                <span className="label-text">Color</span>
               </label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                name="color"
+                value={formData.color}
                 onChange={handleChange}
-                placeholder="ejemplo@correo.com"
+                placeholder="Ingrese el color"
                 className="input input-bordered w-full"
               />
             </div>
 
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">Teléfono</span>
+                <span className="label-text">Patente</span>
               </label>
               <input
-                type="tel"
-                name="telefono"
-                value={formData.telefono}
+                type="text"
+                name="patente"
+                value={formData.patente}
                 onChange={handleChange}
-                placeholder="Ingrese el teléfono"
+                placeholder="Ingrese el Patente"
                 className="input input-bordered w-full"
               />
             </div>
@@ -113,7 +113,7 @@ export default function createModal() {
 
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-primary mr-2">Guardar</button>
+              <button className="btn btn-primary mr-2" onClick={handleSubmit}>Guardar</button>
               <button className="btn">Cerrar</button>
             </form>
           </div>

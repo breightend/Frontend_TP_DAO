@@ -3,6 +3,10 @@ import { useLocation } from "wouter";
 import ClientsInfo from "./ClientEmployeeCarInfo/ClientsInfo";
 import { useState } from "react";
 import CreateClient from "./Modals/createClient";
+import EmployeeInfo from "./ClientEmployeeCarInfo/EmployeeInfo";
+import CarsInfo from "./ClientEmployeeCarInfo/CarsInfo";
+import CreateEmployeeModal from "./Modals/CreateEmployee";
+import CreateCar from "./Modals/CreateCar";
 
 export default function ClientEmployeeCars() {
   const [variante, setVariante] = useState<string>("cliente");
@@ -83,12 +87,19 @@ export default function ClientEmployeeCars() {
       )}
       {variante === "empleado" && (
         <>
-          <p>Hola!</p>
+        <div className="flex mt-2 mb-2">
+          <CreateEmployeeModal />
+        </div>
+          <EmployeeInfo />
         </>
       )}
       {variante === "auto" && (
         <>
-          <p>Holiwiws!</p>
+        <div className="flex mt-2 mb-2">
+          <CreateCar />
+
+        </div>
+          <CarsInfo />
         </>
       )}
 

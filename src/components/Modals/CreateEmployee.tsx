@@ -1,11 +1,12 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { createClient } from "../../services/clientService";
+import { createEmployee } from "../../services/employeeService";
 
-export default function createModal() {
+export default function CreateEmployeeModal() {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
+    fechaNacimiento: "",
     dni: "",
     email: "",
     telefono: "",
@@ -19,9 +20,9 @@ export default function createModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      createClient(formData);
+      createEmployee(formData);
     } catch (error) {
-      console.error("Error creating client:", error);
+      console.error("Error creating employee:", error);
     }
   };
 
@@ -29,15 +30,15 @@ export default function createModal() {
     <>
       <button
         className="ml-4 btn btn-neutral btn-circle tooltip transform hover:rotate-180 transition-transform duration-300"
-        datatype="Agregar cliente"
-        title="Agregar cliente"
-        onClick={() => document.getElementById("modal_cliente").showModal()}
+        datatype="Agregar empleado"
+        title="Agregar empleado"
+        onClick={() => document.getElementById("modal_employee").showModal()}
       >
         <Plus />
       </button>
-      <dialog id="modal_cliente" className="modal">
+      <dialog id="modal_employee" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Agregar Cliente</h3>
+          <h3 className="font-bold text-lg">Agregar Empleado</h3>
 
           <form className="py-4">
             <div className="form-control w-full mb-4">
@@ -70,6 +71,20 @@ export default function createModal() {
 
             <div className="form-control w-full mb-4">
               <label className="label">
+                <span className="label-text">Fecha de nacimiento</span>
+              </label>
+              <input
+                type="text"
+                name="fechaNacimiento"
+                value={formData.fechaNacimiento}
+                onChange={handleChange}
+                placeholder="Ingrese el año"
+                className="input input-bordered w-full"
+              />
+            </div>
+            
+            <div className="form-control w-full mb-4">
+              <label className="label">
                 <span className="label-text">DNI</span>
               </label>
               <input
@@ -81,17 +96,17 @@ export default function createModal() {
                 className="input input-bordered w-full"
               />
             </div>
-
+            
             <div className="form-control w-full mb-4">
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
               <input
-                type="email"
+                type="text"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="ejemplo@correo.com"
+                placeholder="Ingrese el email"
                 className="input input-bordered w-full"
               />
             </div>
@@ -101,7 +116,7 @@ export default function createModal() {
                 <span className="label-text">Teléfono</span>
               </label>
               <input
-                type="tel"
+                type="text"
                 name="telefono"
                 value={formData.telefono}
                 onChange={handleChange}
@@ -113,7 +128,9 @@ export default function createModal() {
 
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-primary mr-2">Guardar</button>
+              <button className="btn btn-primary mr-2" onClick={handleSubmit}>
+                Guardar
+              </button>
               <button className="btn">Cerrar</button>
             </form>
           </div>
