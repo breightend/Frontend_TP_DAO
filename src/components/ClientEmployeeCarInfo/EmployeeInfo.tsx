@@ -29,6 +29,7 @@ export default function EmployeeInfo() {
               <th>DNI</th>
               <th>Email</th>
               <th>Teléfono</th>
+              <th>Fecha nacimiento </th>
             </tr>
           </thead>
           <tbody>

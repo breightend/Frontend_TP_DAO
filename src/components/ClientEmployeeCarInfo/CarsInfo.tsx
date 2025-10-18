@@ -24,11 +24,11 @@ export default function CarsInfo() {
           <thead>
             <tr>
               <th>#</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>DNI</th>
-              <th>Email</th>
-              <th>Teléfono</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>Año</th>
+              <th>Color</th>
+              <th>Precio</th>
             </tr>
           </thead>
           <tbody>
@@ -36,11 +36,11 @@ export default function CarsInfo() {
               autos.map((auto: any, index: number) => (
                 <tr key={auto.id}>
                   <th>{index + 1}</th>
-                  <td>{auto.nombre}</td>
-                  <td>{auto.apellido}</td>
-                  <td>{auto.dni}</td>
-                  <td>{auto.email}</td>
-                  <td>{auto.telefono}</td>
+                  <td>{auto.marca}</td>
+                  <td>{auto.modelo}</td>
+                  <td>{auto.año}</td>
+                  <td>{auto.color}</td>
+                  <td>{auto.precio}</td>
                 </tr>
               ))}
           </tbody>

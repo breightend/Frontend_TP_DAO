@@ -7,6 +7,9 @@ function App() {
     setLocation("/clients-employees-cars");
   };
 
+  const handleCarRentalsClick = () => {
+    setLocation("/car-rentals");
+  };
   return (
     <>
       <div className="flex flex-col items-center justify-center bg-base-100 mt-4 gap-4">
@@ -49,6 +52,12 @@ function App() {
             <p className="card-text">
               Informacion sobre los alquileres realizados.
             </p>
+            <div
+              className="btn btn-secondary"
+              onClick={handleCarRentalsClick}
+            >
+              Click aqui
+            </div>
           </div>
         </div>
         <div className="card bg-base-200 shadow-xl bg-gradient-to-b from-blue-200 to-purple-200 m-4">
@@ -65,6 +74,7 @@ function App() {
               Consulta la informacion sobre el mantenimiento de los vehiculos
               aqui
             </p>
+            
           </div>
         </div>
         <div className="card bg-base-200 shadow-xl bg-gradient-to-b from-blue-200 to-purple-200 m-4">

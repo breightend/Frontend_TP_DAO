@@ -29,6 +29,7 @@ export default function ClientsInfo() {
               <th>DNI</th>
               <th>Email</th>
               <th>Teléfono</th>
+              <th>Fecha Nacimiento</th>
             </tr>
           </thead>
           <tbody>
@@ -40,6 +41,7 @@ export default function ClientsInfo() {
                   <td>{client.dni}</td>
                   <td>{client.email}</td>
                   <td>{client.telefono}</td>
+                  <td>{client.fechaNacimiento}</td>
                 </tr>
               ))}
           </tbody>

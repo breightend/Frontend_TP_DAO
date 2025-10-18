@@ -7,10 +7,11 @@ import EmployeeInfo from "./ClientEmployeeCarInfo/EmployeeInfo";
 import CarsInfo from "./ClientEmployeeCarInfo/CarsInfo";
 import CreateEmployeeModal from "./Modals/CreateEmployee";
 import CreateCar from "./Modals/CreateCar";
+import EditClient from "./Modals/EditClient";
+
 
 export default function ClientEmployeeCars() {
   const [variante, setVariante] = useState<string>("cliente");
-  const [showModal, setShowModal] = useState(false);
   const handleClientClick = () => {
     setVariante("cliente");
   };
@@ -21,14 +22,6 @@ export default function ClientEmployeeCars() {
 
   const handleCarClick = () => {
     setVariante("auto");
-  };
-
-  const handleModalOpen = () => {
-    setShowModal(true);
-  };
-
-  const handleModalClose = () => {
-    setShowModal(false);
   };
 
   const [, setLocation] = useLocation();
@@ -75,30 +68,39 @@ export default function ClientEmployeeCars() {
           </a>
         </li>
       </ul>
+      <div className="ml-2 mb-2">
+        <button
+          type="button"
+          onClick={() => {}}
+          className="btn btn-ghost gap-2 tooltip"
+          data-tip="Editar (no hace nada todavía)"
+        >
+          
+        </button>
+      </div>
 
       {variante === "cliente" && (
-          <>
+        <>
           <div className="flex mt-2 mb-2 ">
-
-          <CreateClient />
+            <CreateClient />
+            <EditClient />
           </div>
           <ClientsInfo />
         </>
       )}
       {variante === "empleado" && (
         <>
-        <div className="flex mt-2 mb-2">
-          <CreateEmployeeModal />
-        </div>
+          <div className="flex mt-2 mb-2">
+            <CreateEmployeeModal />
+          </div>
           <EmployeeInfo />
         </>
       )}
       {variante === "auto" && (
         <>
-        <div className="flex mt-2 mb-2">
-          <CreateCar />
-
-        </div>
+          <div className="flex mt-2 mb-2">
+            <CreateCar />
+          </div>
           <CarsInfo />
         </>
       )}

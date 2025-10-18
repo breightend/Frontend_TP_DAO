@@ -12,3 +12,8 @@ export const createClient = async (clientData) => {
     return response.data
 }
 
+export const updateClient = async (id, clientData) => {
+    const response = await axios.put(`${API_URL}/${id}`, clientData)
+    return response.data
+}
+

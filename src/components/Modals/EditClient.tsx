@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "../../services/clientService";
+import editGif from "../../images/Edit V2.gif";
 
 export default function createModal() {
   const [formData, setFormData] = useState({
@@ -21,6 +22,8 @@ export default function createModal() {
     e.preventDefault();
     try {
       createClient(formData);
+
+
     } catch (error) {
       console.error("Error creating client:", error);
     }
@@ -29,16 +32,16 @@ export default function createModal() {
   return (
     <>
       <button
-        className="ml-4 btn btn-neutral btn-circle tooltip transform hover:rotate-180 transition-transform duration-300"
-        datatype="Agregar cliente"
-        title="Agregar cliente"
-        onClick={() => document.getElementById("modal_cliente").showModal()}
+        className=" btn btn-ghost tooltip "
+        datatype="Editar cliente"
+        title="Editar cliente"
+        onClick={() => document.getElementById("modal_editar_cliente").showModal()}
       >
-        <Plus />
+        <img src={editGif} alt="Editar" className="w-12 h-12" />
       </button>
-      <dialog id="modal_cliente" className="modal">
+      <dialog id="modal_editar_cliente" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Agregar Cliente</h3>
+          <h3 className="font-bold text-lg">Editar Cliente</h3>
 
           <form className="py-4">
             <div className="form-control w-full mb-4">
@@ -142,7 +145,7 @@ export default function createModal() {
 
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-primary mr-2" onClick={handleSubmit}>Guardar</button>
+              <button className="btn btn-primary mr-2">Guardar</button>
               <button className="btn">Cerrar</button>
             </form>
           </div>
