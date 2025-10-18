@@ -12,3 +12,7 @@ export const createAuto = async (autoData) => {
     return response.data
 }
 
+export const updateCar = async (id, autoData) => {
+    const response = await axios.put(`${API_URL}/${id}`, autoData)
+    return response.data
+}

@@ -8,6 +8,7 @@ import CarsInfo from "./ClientEmployeeCarInfo/CarsInfo";
 import CreateEmployeeModal from "./Modals/CreateEmployee";
 import CreateCar from "./Modals/CreateCar";
 import EditClient from "./Modals/EditClient";
+import EditCar from "./Modals/EditCar";
 
 
 export default function ClientEmployeeCars() {
@@ -100,6 +101,7 @@ export default function ClientEmployeeCars() {
         <>
           <div className="flex mt-2 mb-2">
             <CreateCar />
+            <EditCar />
           </div>
           <CarsInfo />
         </>

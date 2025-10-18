@@ -1,45 +1,42 @@
 import { useState, useEffect } from "react";
-import { updateClient } from "../../services/clientService";
+import { updateCar } from "../../services/autosService";
 import { Edit } from "lucide-react";
 
-interface EditClientProps {
-  client?: {
+interface EditCarProps {
+  car?: {
     id: number;
-    nombre: string;
-    apellido: string;
-    dni: string;
-    email: string;
-    telefono: string;
-    fechaNacimiento: string;
+    marca: string;
+    modelo: string;
+    anio: string;
+    color: string;
+    patente: string;
   };
   onSuccess?: () => void;
 }
 
-export default function EditClient({ client, onSuccess }: EditClientProps) {
+export default function EditCar({ car, onSuccess }: EditCarProps) {
   const [formData, setFormData] = useState({
-    nombre: client?.nombre || "",
-    apellido: client?.apellido || "",
-    dni: client?.dni || "",
-    email: client?.email || "",
-    telefono: client?.telefono || "",
-    fechaNacimiento: client?.fechaNacimiento || "",
+    marca: car?.marca || "",
+    modelo: car?.modelo || "",
+    anio: car?.anio || "",
+    color: car?.color || "",
+    patente: car?.patente || "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (client) {
+    if (car) {
       setFormData({
-        nombre: client.nombre || "",
-        apellido: client.apellido || "",
-        dni: client.dni || "",
-        email: client.email || "",
-        telefono: client.telefono || "",
-        fechaNacimiento: client.fechaNacimiento || "",
+        marca: car.marca || "",
+        modelo: car.modelo || "",
+        anio: car.anio || "",
+        color: car.color || "",
+        patente: car.patente || "",
       });
     }
-  }, [client]);
+  }, [car]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,8 +46,8 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!client?.id) {
-      setError("No se puede editar el cliente: ID no encontrado");
+    if (!car?.id) {
+      setError("No se puede editar el auto: ID no encontrado");
       return;
     }
 
@@ -58,11 +55,10 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
     setError("");
 
     try {
-      await updateClient(client.id, formData);
+      await updateCar(car.id, formData);
 
-      // Cerrar modal
       const modal = document.getElementById(
-        "modal_editar_cliente"
+        "modal_editar_auto"
       ) as HTMLDialogElement;
       if (modal) {
         modal.close();
@@ -72,10 +68,8 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
         onSuccess();
       }
     } catch (error) {
-      console.error("Error updating client:", error);
-      setError(
-        "Error al actualizar el cliente. Por favor, intente nuevamente."
-      );
+      console.error("Error updating car:", error);
+      setError("Error al actualizar el auto. Por favor, intente nuevamente.");
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +77,7 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
 
   const openModal = () => {
     const modal = document.getElementById(
-      "modal_editar_cliente"
+      "modal_editar_auto"
     ) as HTMLDialogElement;
     if (modal) {
       modal.showModal();
@@ -94,15 +88,15 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
     <>
       <button
         className="btn btn-neutral btn-circle tooltip"
-        data-tip="Editar cliente"
-        title="Editar cliente"
+        data-tip="Editar auto"
+        title="Editar auto"
         onClick={openModal}
       >
         <Edit />
       </button>
-      <dialog id="modal_editar_cliente" className="modal">
+      <dialog id="modal_editar_auto" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Editar Cliente</h3>
+          <h3 className="font-bold text-lg">Editar Auto</h3>
 
           {error && (
             <div className="alert alert-error mb-4">
@@ -113,14 +107,14 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
           <form onSubmit={handleSubmit} className="py-4">
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">Nombre</span>
+                <span className="label-text">Marca</span>
               </label>
               <input
                 type="text"
-                name="nombre"
-                value={formData.nombre}
+                name="marca"
+                value={formData.marca}
                 onChange={handleChange}
-                placeholder="Ingrese el nombre"
+                placeholder="Ingrese la marca"
                 className="input input-bordered w-full"
                 required
               />
@@ -128,14 +122,14 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
 
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">Apellido</span>
+                <span className="label-text">Modelo</span>
               </label>
               <input
                 type="text"
-                name="apellido"
-                value={formData.apellido}
+                name="modelo"
+                value={formData.modelo}
                 onChange={handleChange}
-                placeholder="Ingrese el apellido"
+                placeholder="Ingrese el modelo"
                 className="input input-bordered w-full"
                 required
               />
@@ -143,14 +137,14 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
 
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">DNI</span>
+                <span className="label-text">Año</span>
               </label>
               <input
                 type="text"
-                name="dni"
-                value={formData.dni}
+                name="anio"
+                value={formData.anio}
                 onChange={handleChange}
-                placeholder="Ingrese el DNI"
+                placeholder="Ingrese el año"
                 className="input input-bordered w-full"
                 required
               />
@@ -158,14 +152,14 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
 
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">Email</span>
+                <span className="label-text">Color</span>
               </label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                name="color"
+                value={formData.color}
                 onChange={handleChange}
-                placeholder="ejemplo@correo.com"
+                placeholder="Ingrese el color"
                 className="input input-bordered w-full"
                 required
               />
@@ -173,28 +167,14 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
 
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">Teléfono</span>
+                <span className="label-text">Patente</span>
               </label>
               <input
-                type="tel"
-                name="telefono"
-                value={formData.telefono}
+                type="text"
+                name="patente"
+                value={formData.patente}
                 onChange={handleChange}
-                placeholder="Ingrese el teléfono"
-                className="input input-bordered w-full"
-                required
-              />
-            </div>
-
-            <div className="form-control w-full mb-4">
-              <label className="label">
-                <span className="label-text">Fecha de Nacimiento</span>
-              </label>
-              <input
-                type="date"
-                name="fechaNacimiento"
-                value={formData.fechaNacimiento}
-                onChange={handleChange}
+                placeholder="Ingrese la patente"
                 className="input input-bordered w-full"
                 required
               />
