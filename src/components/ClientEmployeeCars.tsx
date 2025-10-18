@@ -81,7 +81,7 @@ export default function ClientEmployeeCars() {
 
       {variante === "cliente" && (
         <>
-          <div className="flex mt-2 mb-2 ">
+          <div className="flex mt-2 mb-2 gap-2 ">
             <CreateClient />
             <EditClient />
           </div>

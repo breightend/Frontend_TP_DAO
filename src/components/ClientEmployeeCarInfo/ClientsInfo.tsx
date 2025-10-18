@@ -1,8 +1,10 @@
-import { getClients } from '../../services/clientService'
-import { useEffect, useState } from 'react'
+import { getClients } from "../../services/clientService";
+import { useEffect, useState } from "react";
+import EditClient from "../Modals/EditClient";
 
 export default function ClientsInfo() {
   const [clients, setClients] = useState([]);
+  const [selectedClient, setSelectedClient] = useState(null);
 
   useEffect(() => {
     fetchClients();
@@ -10,12 +12,18 @@ export default function ClientsInfo() {
 
   const fetchClients = async () => {
     try {
-      const clients = await getClients()
-      setClients(clients)
+      const clients = await getClients();
+      setClients(clients);
     } catch (error) {
-      console.error('Error fetching clients:', error);
-    }}
+      console.error("Error fetching clients:", error);
+    }
+  };
 
+  const handleEditSuccess = () => {
+    // Recargar la lista de clientes después de editar
+    fetchClients();
+    setSelectedClient(null);
+  };
 
   return (
     <>
@@ -30,10 +38,12 @@ export default function ClientsInfo() {
               <th>Email</th>
               <th>Teléfono</th>
               <th>Fecha Nacimiento</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-              {clients && clients.map((client: any, index: number) => (
+            {clients &&
+              clients.map((client: any, index: number) => (
                 <tr key={client.id}>
                   <th>{index + 1}</th>
                   <td>{client.nombre}</td>
@@ -42,11 +52,24 @@ export default function ClientsInfo() {
                   <td>{client.email}</td>
                   <td>{client.telefono}</td>
                   <td>{client.fechaNacimiento}</td>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-ghost"
+                      onClick={() => setSelectedClient(client)}
+                    >
+                      Editar
+                    </button>
+                  </td>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
+
+      {/* Componente de edición que se activa cuando se selecciona un cliente */}
+      {selectedClient && (
+        <EditClient client={selectedClient} onSuccess={handleEditSuccess} />
+      )}
     </>
-  )
+  );
 }
