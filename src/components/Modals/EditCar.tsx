@@ -87,7 +87,7 @@ export default function EditCar({ car, onSuccess }: EditCarProps) {
   return (
     <>
       <button
-        className="btn btn-neutral btn-circle tooltip"
+        className="btn btn-neutral btn-circle tooltip ml-2"
         data-tip="Editar auto"
         title="Editar auto"
         onClick={openModal}
@@ -180,26 +180,28 @@ export default function EditCar({ car, onSuccess }: EditCarProps) {
               />
             </div>
 
-            <div className="modal-action">
-              <button
-                type="submit"
-                className="btn btn-primary mr-2"
-                disabled={isLoading}
-              >
-                {isLoading ? "Guardando..." : "Guardar Cambios"}
-              </button>
-              <button
-                type="button"
-                className="btn"
-                onClick={() => {
-                  const modal = document.getElementById(
-                    "modal_editar_cliente"
-                  ) as HTMLDialogElement;
-                  if (modal) modal.close();
-                }}
-              >
-                Cerrar
-              </button>
+            <div className="modal-action ">
+              <form method="dialog" className="">
+                <button
+                  type="submit"
+                  className="btn btn-primary mr-2 "
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Guardando..." : "Guardar Cambios"}
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    const modal = document.getElementById(
+                      "modal_editar_cliente"
+                    ) as HTMLDialogElement;
+                    if (modal) modal.close();
+                  }}
+                >
+                  Cerrar
+                </button>
+              </form>
             </div>
           </form>
         </div>

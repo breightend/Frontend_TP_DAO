@@ -1,45 +1,49 @@
 import { useState, useEffect } from "react";
-import { updateClient } from "../../services/clientService";
+import { updateemployee } from "../../services/employeeService";
 import { Edit } from "lucide-react";
 
-interface EditClientProps {
-  client?: {
+interface EditEmployeeProps {
+  employee?: {
     id: number;
     nombre: string;
     apellido: string;
     dni: string;
+    tipoDocumento: string;
     email: string;
     telefono: string;
     fechaNacimiento: string;
+    fechaInicioActividad:string;
+    legajo: string;
+
   };
   onSuccess?: () => void;
 }
 
-export default function EditClient({ client, onSuccess }: EditClientProps) {
+export default function EditEmployee({ employee, onSuccess }: EditEmployeeProps) {
   const [formData, setFormData] = useState({
-    nombre: client?.nombre || "",
-    apellido: client?.apellido || "",
-    dni: client?.dni || "",
-    email: client?.email || "",
-    telefono: client?.telefono || "",
-    fechaNacimiento: client?.fechaNacimiento || "",
+    nombre: employee?.nombre || "",
+    apellido: employee?.apellido || "",
+    dni: employee?.dni || "",
+    email: employee?.email || "",
+    telefono: employee?.telefono || "",
+    fechaNacimiento: employee?.fechaNacimiento || "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (client) {
+    if (employee) {
       setFormData({
-        nombre: client.nombre || "",
-        apellido: client.apellido || "",
-        dni: client.dni || "",
-        email: client.email || "",
-        telefono: client.telefono || "",
-        fechaNacimiento: client.fechaNacimiento || "",
+        nombre: employee.nombre || "",
+        apellido: employee.apellido || "",
+        dni: employee.dni || "",
+        email: employee.email || "",
+        telefono: employee.telefono || "",
+        fechaNacimiento: employee.fechaNacimiento || "",
       });
     }
-  }, [client]);
+  }, [employee]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,8 +53,8 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!client?.id) {
-      setError("No se puede editar el cliente: ID no encontrado");
+    if (!employee?.id) {
+      setError("No se puede editar el employeee: ID no encontrado");
       return;
     }
 
@@ -58,10 +62,10 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
     setError("");
 
     try {
-      await updateClient(client.id, formData);
+      await updateemployee(employee.id, formData);
 
       const modal = document.getElementById(
-        "modal_editar_cliente"
+        "modal_editar_employeee"
       ) as HTMLDialogElement;
       if (modal) {
         modal.close();
@@ -71,9 +75,9 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
         onSuccess();
       }
     } catch (error) {
-      console.error("Error updating client:", error);
+      console.error("Error updating employee:", error);
       setError(
-        "Error al actualizar el cliente. Por favor, intente nuevamente."
+        "Error al actualizar el employeee. Por favor, intente nuevamente."
       );
     } finally {
       setIsLoading(false);
@@ -82,7 +86,7 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
 
   const openModal = () => {
     const modal = document.getElementById(
-      "modal_editar_cliente"
+      "modal_editar_employeee"
     ) as HTMLDialogElement;
     if (modal) {
       modal.showModal();
@@ -92,16 +96,16 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
   return (
     <>
       <button
-        className="btn btn-neutral btn-circle tooltip"
-        data-tip="Editar cliente"
-        title="Editar cliente"
+        className="btn btn-neutral btn-circle tooltip ml-2"
+        data-tip="Editar employeee"
+        title="Editar employeee"
         onClick={openModal}
       >
         <Edit />
       </button>
-      <dialog id="modal_editar_cliente" className="modal">
+      <dialog id="modal_editar_employeee" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Editar Cliente</h3>
+          <h3 className="font-bold text-lg">Editar información empleado</h3>
 
           {error && (
             <div className="alert alert-error mb-4">
@@ -212,7 +216,7 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
                 className="btn"
                 onClick={() => {
                   const modal = document.getElementById(
-                    "modal_editar_cliente"
+                    "modal_editar_employeee"
                   ) as HTMLDialogElement;
                   if (modal) modal.close();
                 }}

@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { HardDrive, Plus, Save } from "lucide-react";
 import { useState } from "react";
 import { createAuto } from "../../services/autosService";
 
@@ -113,7 +113,7 @@ export default function createModal() {
 
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-primary mr-2" onClick={handleSubmit}>Guardar</button>
+              <button className="btn btn-primary mr-2" onClick={handleSubmit}><Save /> Guardar</button>
               <button className="btn">Cerrar</button>
             </form>
           </div>

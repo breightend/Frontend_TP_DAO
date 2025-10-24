@@ -20,7 +20,6 @@ export default function ClientsInfo() {
   };
 
   const handleEditSuccess = () => {
-    // Recargar la lista de clientes después de editar
     fetchClients();
     setSelectedClient(null);
   };
@@ -66,7 +65,6 @@ export default function ClientsInfo() {
         </table>
       </div>
 
-      {/* Componente de edición que se activa cuando se selecciona un cliente */}
       {selectedClient && (
         <EditClient client={selectedClient} onSuccess={handleEditSuccess} />
       )}
