@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar.tsx";
 import ClientEmployeeCars from "./components/ClientEmployeeCars.tsx";
 import { Route, Router } from "wouter";
 import CarRentals from "./components/CarRentals.tsx";
+import Stadistic from "./components/Stadistic/Stadistic.tsx";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -15,6 +16,7 @@ createRoot(document.getElementById("root")!).render(
       <Route path="/" component={App} />
       <Route path="/clients-employees-cars" component={ClientEmployeeCars} />
       <Route path="/car-rentals" component={CarRentals} />
+      <Route path="/stadistic" component={Stadistic} />
     </Router>
   </StrictMode>
 );

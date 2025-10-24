@@ -107,6 +107,12 @@ function App() {
   const handleCarRentalsClick = () => {
     setLocation("/car-rentals");
   };
+
+  const handleStadisticClick = () => {
+    setLocation("/stadistic");
+  };
+
+
   return (
     <>
       {/* Sistema de Carreteras Profesional */}
@@ -421,8 +427,8 @@ function App() {
             <p className="card-text">
               Consulta la informacion sobre los reportes generados aqui
             </p>
-            <div className="btn btn-secondary hover:btn-accent transition-all duration-300 hover:scale-105">
-              clic aqui
+            <div className="btn btn-secondary hover:btn-accent transition-all duration-300 hover:scale-105" onClick={handleStadisticClick}>
+              click aqui
             </div>
           </div>
         </div>
