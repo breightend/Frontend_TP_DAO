@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getClients } from "../../services/clientService";
 import { getAutos } from "../../services/autosService";
+import { getEmployees } from "../../services/employeeService";
 import { useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
 
@@ -17,15 +18,21 @@ export default function CreateRental() {
 
   const [client, setClient] = useState([]);
   const [car, setCar] = useState([]);
+  const [employee, setEmployee] = useState([]);
+
 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const data = await getClients();
-        setClient(data);
+        const clientData = await getClients();
+        setClient(clientData);
 
         const carsData = await getAutos();
         setCar(carsData);
+
+        const employeesData = await getEmployees();
+        setEmployee(employeesData);
+
       } catch (error) {
         console.error("Error fetching:", error);
       }
@@ -44,7 +51,7 @@ export default function CreateRental() {
 
       <button
         className="btn btn-circle btn-neutral tooltip"
-        data-tip="Volver"
+        clientData-tip="Volver"
         onClick={handleVolver}
         >
         <ArrowLeft />
@@ -113,10 +120,25 @@ export default function CreateRental() {
             {car &&
               car.map((car) => (
                 <option key={car.id} value={car.id}>
-                  {car.marca} {car.modelo}
+                  {car.marca} {car.modelo} {car.patente}
                 </option>
               ))}
             {car.length === 0 && <option>No hay autos registrados</option>}
+          </select>
+        </label>
+
+        <label htmlFor="">
+          Selecciona empleado:
+          <select className="select select-bordered w-full max-w-xs ml-2">
+            {employee &&
+              employee.map((employee) => (
+                <option key={employee.id} value={employee.id}>
+                  {employee.legajo} {employee.nombre} {employee.apellido}
+                </option>
+              ))}
+            {employee.length === 0 && (
+              <option>No hay empleados registrados</option>
+            )}
           </select>
         </label>
       </div>
