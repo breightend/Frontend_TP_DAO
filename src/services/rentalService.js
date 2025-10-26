@@ -6,7 +6,13 @@ export const getRentals = async () => {
   const response = await axios.get(API_URL);
   return response.data;
 };
+
 export const createRental = async (rentalData) => {
   const response = await axios.post(API_URL, rentalData);
+  return response.data;
+}
+
+export const submitRentalDates = async (dates) => {
+  const response = await axios.post(`${API_URL}/dates`, dates);
   return response.data;
 }

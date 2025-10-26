@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { getRentals } from "../services/rentalServices";
+import { getRentals } from "../services/rentalService";
 
 export default function CarRentals() {
   const [locations, setLocations] = useLocation();

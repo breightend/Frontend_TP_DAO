@@ -16,3 +16,13 @@ export const updateClient = async (id, clientData) => {
   const response = await axios.put(`${API_URL}/${id}`, clientData);
   return response.data;
 };
+
+export const deleteClient = async (id) => {
+  const response = await axios.delete(`${API_URL}/${id}`);
+  return response.data;
+};
+
+export const getAvailableClients = async () => {
+  const response = await axios.get(`${API_URL}/available`);
+  return response.data;
+}
