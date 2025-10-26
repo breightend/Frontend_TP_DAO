@@ -17,7 +17,12 @@ export const updateCar = async (id, autoData) => {
     return response.data
 }
 
-export const gatAviableCars = async () => {
+export const getAviableCars = async () => {
     const response = await axios.get(`${API_URL}/available`)
+    return response.data
+}
+
+export const getRentedCars = async () => {
+    const response = await axios.get(`${API_URL}/rented`)
     return response.data
 }

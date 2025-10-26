@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getAvailableClients } from "../../services/clientService";
-import { gatAviableCars } from "../../services/autosService";
+import { getAviableCars } from "../../services/autosService";
 import { getEmployees } from "../../services/employeeService";
 import { createRental, submitRentalDates } from "../../services/rentalService";
 import { useLocation } from "wouter";
@@ -30,7 +30,7 @@ export default function CreateRental() {
         const clientData = await getAvailableClients();
         setClient(clientData);
 
-        const carsData = await gatAviableCars();
+        const carsData = await getAviableCars();
         setCar(carsData);
 
         const employeesData = await getEmployees();

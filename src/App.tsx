@@ -112,7 +112,6 @@ function App() {
     setLocation("/stadistic");
   };
 
-
   return (
     <>
       {/* Sistema de Carreteras Profesional */}
@@ -233,7 +232,6 @@ function App() {
                   </div>
                 </div>
 
-
                 <div className="absolute top-13 right-40">
                   <div className="relative">
                     <div className="w-0 h-0 border-l-[42px] border-r-[42px] border-b-[54px] border-l-transparent border-r-transparent border-b-amber-800"></div>
@@ -295,7 +293,7 @@ function App() {
 
                 <div className="absolute top-36 right-24">
                   <div className="w-3 h-2 bg-blue-500 border border-white -mt-1 text-xs text-center">
-                  <div className="w-1 h-4 bg-gray-400 mx-auto"></div>
+                    <div className="w-1 h-4 bg-gray-400 mx-auto"></div>
                     🚗
                   </div>
                 </div>
@@ -331,7 +329,6 @@ function App() {
                 <div className="absolute top-2 left-80 w-8 h-4 bg-white opacity-40 rounded-full"></div>
                 <div className="absolute top-3 left-100 w-5 h-3 bg-white opacity-55 rounded-full"></div>
               </div>
-              
             </div>
           </div>
         </div>
@@ -384,7 +381,7 @@ function App() {
               Registro de alquileres
             </h3>
             <p className="card-text">
-              Informacion sobre los alquileres realizados.
+              Informacion sobre los alquileres y sanciones realizadas.
             </p>
             <div
               className="btn btn-secondary hover:btn-success transition-all duration-300 hover:scale-105"
@@ -427,7 +424,10 @@ function App() {
             <p className="card-text">
               Consulta la informacion sobre los reportes generados aqui
             </p>
-            <div className="btn btn-secondary hover:btn-accent transition-all duration-300 hover:scale-105" onClick={handleStadisticClick}>
+            <div
+              className="btn btn-secondary hover:btn-accent transition-all duration-300 hover:scale-105"
+              onClick={handleStadisticClick}
+            >
               click aqui
             </div>
           </div>

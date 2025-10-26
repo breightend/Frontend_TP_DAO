@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, OctagonAlert, Plus } from "lucide-react";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { getRentals } from "../services/rentalService";
@@ -6,7 +6,7 @@ import { getRentals } from "../services/rentalService";
 export default function CarRentals() {
   const [locations, setLocations] = useLocation();
   const [rentals, setRentals] = useState([]);
-  const [showInfoRental, setShowInfoRental] = useState(false);
+  const [showInfoRental, setShowInfoRental] = useState<boolean>(false);
 
   const handleBackButton = () => {
     setLocations("/");
@@ -18,6 +18,10 @@ export default function CarRentals() {
 
   const handleAddRental = () => {
     setLocations("/add-rental");
+  };
+
+  const handleAddSancion = () => {
+    setLocations("/add-sancion");
   };
 
   useEffect(() => {
@@ -53,7 +57,11 @@ export default function CarRentals() {
         </button>
 
         <button className="btn btn-success ml-2" onClick={handleAddRental}>
-          Agregar Nuevo Alquiler
+          <Plus /> Agregar Nuevo Alquiler
+        </button>
+
+        <button className="btn btn-warning ml-2" onClick={handleAddSancion}>
+          <OctagonAlert /> Agregar sancion
         </button>
 
         {showInfoRental && (
