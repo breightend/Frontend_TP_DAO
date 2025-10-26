@@ -22,3 +22,12 @@ export const getActiveRentals = async () => {
   return response.data;
 }
 
+export const getSanciones = async () => {
+  const response = await axios.get(`${API_URL}/sanciones`);
+  return response.data;
+}
+
+export const createRentalWithSancion = async (sancionData) => {
+  const response = await axios.post(`${API_URL}/sanciones`, sancionData);
+  return response.data;
+}
