@@ -2,6 +2,7 @@ import { getActiveRentals } from "../../services/rentalService";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import AddSancion from "../Modals/AddSancion";
 
 export default function AddSanc1ion() {
   const [locations, setLocations] = useLocation();
@@ -26,11 +27,16 @@ export default function AddSanc1ion() {
         <button className="btn btn-neutral mr-2" onClick={handleVolver}>
           <ArrowLeft />
         </button>
+        
         <span>Sanciones</span>
       </div>
       <p className="ml-2 mt-2">
         Aquí puedes agregar sanciones a los alquileres activos.
       </p>
+      <div className="p-2">
+
+      <AddSancion />
+      </div>
       <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
         <table className="table">
           <thead>

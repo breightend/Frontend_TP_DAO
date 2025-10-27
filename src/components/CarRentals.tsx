@@ -61,7 +61,7 @@ export default function CarRentals() {
         </button>
 
         <button className="btn btn-warning ml-2" onClick={handleAddSancion}>
-          <OctagonAlert /> Agregar sancion
+          <OctagonAlert /> Informacion sanciones
         </button>
 
         {showInfoRental && (
