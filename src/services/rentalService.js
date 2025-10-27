@@ -27,7 +27,7 @@ export const getSanciones = async () => {
   return response.data;
 }
 
-export const createRentalWithSancion = async (sancionData) => {
+export const createSancion = async (sancionData) => {
   const response = await axios.post(`${API_URL}/sanciones`, sancionData);
   return response.data;
 }

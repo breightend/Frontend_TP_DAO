@@ -1,9 +1,27 @@
 import { Plus } from "lucide-react";
+import { createSancion } from "../../services/rentalService";
+import { useState } from "react";
 
 export default function AddSancion() {
+    const [formData, setFormData] = useState({
+    motivo: "",
+    monto: "",
+    descripcion: "",
+  });
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Lógica para manejar el envío del formulario
+    const sancionData = {
+      motivo: formData.motivo,
+      monto: formData.monto,
+      descripcion: formData.descripcion,
+    };
+    createSancion(sancionData)
+      .then(() => {
+        alert("Sanción creada con éxito");})
+      .catch((e) => {
+        console.error("Error creating sancion:", e);
+      });
   };
 
   return (
