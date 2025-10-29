@@ -1,7 +1,7 @@
 import { getActiveRentals } from "../../services/rentalService";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, HandCoins } from "lucide-react";
 import AddSancion from "../Modals/AddSancion";
 
 export default function AddSanc1ion() {
@@ -21,22 +21,24 @@ export default function AddSanc1ion() {
     setLocations("/car-rentals");
   };
 
+  //TODO: agregar pago de sancion
+
   return (
     <>
       <div className="font-bold text-3xl ml-2 gap-2">
         <button className="btn btn-neutral mr-2" onClick={handleVolver}>
           <ArrowLeft />
         </button>
-        
+
         <span>Sanciones</span>
       </div>
-      <p className="ml-2 mt-2">
-        Aquí puedes agregar sanciones a los alquileres activos.
-      </p>
-      <div className="p-2">
-
-      <AddSancion />
+      <div className="p-2 flex gap-2">
+        <AddSancion />
+        <button className="btn btn-accent"><HandCoins /> Pagar Sanción</button>
       </div>
+      <div>
+      </div>
+      <p className="ml-2 mt-2">Vehículos con sanciones.</p>
       <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
         <table className="table">
           <thead>
