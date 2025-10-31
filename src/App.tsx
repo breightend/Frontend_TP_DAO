@@ -112,6 +112,10 @@ function App() {
     setLocation("/stadistic");
   };
 
+  const handleMaintenanceClick = () => {
+    setLocation("/car-maintenance");
+  };
+
   return (
     <>
       {/* Sistema de Carreteras Profesional */}
@@ -407,6 +411,12 @@ function App() {
               Consulta la informacion sobre el mantenimiento de los vehiculos
               aqui
             </p>
+            <div
+              onClick={handleMaintenanceClick}
+              className="btn btn-secondary hover:btn-accent transition-all duration-300 hover:scale-105"
+            >
+              Click aqui
+            </div>
           </div>
         </div>
         <div className="card bg-base-200 shadow-xl bg-gradient-to-b from-pink-200 to-purple-200 m-4 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-pink-500/50">
