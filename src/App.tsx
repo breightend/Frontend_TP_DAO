@@ -2,6 +2,7 @@ import { useLocation } from "wouter";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+import CarAnimation from "./components/AnimandoAndo/CarAnimation";
 
 // Register the plugin
 gsap.registerPlugin(MotionPathPlugin);
@@ -337,6 +338,8 @@ function App() {
           </div>
         </div>
       </div>
+
+      <CarAnimation />
 
       {/* Títulos principales */}
       <div className="flex flex-col items-center justify-center mt-6 gap-4">
