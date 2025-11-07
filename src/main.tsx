@@ -12,6 +12,7 @@ import AddSancion from "./components/Rentals/Sancion.tsx";
 import CarMaintenance from "./components/CarMaintenance/CarMaintance.tsx";
 
 
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Navbar />

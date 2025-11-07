@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Car, Printer, ShoppingCart, BarChart3 } from "lucide-react";
 import { useLocation } from "wouter";
 import {
   LineChart,
@@ -10,10 +10,12 @@ import {
   Legend,
 } from "recharts";
 import { useState } from "react";
+import VentasStadistics from "./VentasStadistics";
+import AutosStadistics from "./AutosStadistics";
 
 export default function Stadistic() {
   const [, setLocation] = useLocation();
-  const [verStadisticas, setVerStadisticas] = useState<boolean>(false);
+  const [verStadisticas, setVerStadisticas] = useState<string>("general");
 
   const data = [
     {
@@ -64,8 +66,8 @@ export default function Stadistic() {
     setLocation("/");
   };
 
-  const handleVerEstadisticas = () => {
-    setVerStadisticas(!verStadisticas);
+  const handleMenu = (ver: string) => {
+    setVerStadisticas(ver);
   };
 
   return (
@@ -79,39 +81,84 @@ export default function Stadistic() {
           Registro y estadísticas
         </h1>
       </div>
-      <button className="btn " onClick={handleVerEstadisticas}>
-        Ver reportes
-      </button>
-      <h2 className="text-2xl font-mono font-semibold"></h2>
-      <LineChart
-        style={{
-          width: "100%",
-          maxWidth: "700px",
-          maxHeight: "70vh",
-          aspectRatio: 1.618,
-        }}
-        responsive
-        data={data}
-        margin={{
-          top: 5,
-          right: 0,
-          left: 0,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis width="auto" />
-        <Tooltip />
-        <Legend />
-        <Line
-          type="monotone"
-          dataKey="pv"
-          stroke="#8884d8"
-          activeDot={{ r: 8 }}
-        />
-        <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-      </LineChart>
+
+      <ul className="menu bg-base-200 lg:menu-horizontal rounded-box">
+        <li>
+          <a
+            className={verStadisticas === "estadisticas-ventas" ? "active" : ""}
+            onClick={() => handleMenu("estadisticas-ventas")}
+          >
+            <ShoppingCart />
+            Ventas
+          </a>
+        </li>
+        <li>
+          <a
+            className={verStadisticas === "estadisticas-autos" ? "active" : ""}
+            onClick={() => handleMenu("estadisticas-autos")}
+          >
+            <Car />
+            Autos
+          </a>
+        </li>
+        <li>
+          <a
+            className={verStadisticas === "general" ? "active" : ""}
+            onClick={() => handleMenu("general")}
+          >
+            <BarChart3 />
+            General
+            <span className="badge badge-xs badge-info"></span>
+          </a>
+        </li>
+      </ul>
+
+      {/* Conditional rendering based on selected menu */}
+      {verStadisticas === "general" && (
+        <div>
+          <h2 className="text-2xl font-mono font-semibold mb-4">
+            Estadísticas Generales
+          </h2>
+          <LineChart
+            style={{
+              width: "100%",
+              maxWidth: "700px",
+              maxHeight: "70vh",
+              aspectRatio: 1.618,
+            }}
+            responsive
+            data={data}
+            margin={{
+              top: 5,
+              right: 0,
+              left: 0,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis width="auto" />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="pv"
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+            />
+            <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+          </LineChart>
+        </div>
+      )}
+
+      {verStadisticas === "estadisticas-ventas" && <VentasStadistics />}
+
+      {verStadisticas === "estadisticas-autos" && <AutosStadistics />}
+      <div className="flex justify-end mr-2 mt-4">
+        <button className="btn btn-neutral tooltip" data-tip="Generar Reporte">
+          <Printer className="mr-2" /> Imprimir
+        </button>
+      </div>
     </div>
   );
 }
