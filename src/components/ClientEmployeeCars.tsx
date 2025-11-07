@@ -2,7 +2,7 @@ import { ArrowLeft, BriefcaseBusiness, Car, UserRound } from "lucide-react";
 import { useLocation } from "wouter";
 import ClientsInfo from "./ClientEmployeeCarInfo/ClientsInfo";
 import { useState } from "react";
-import CreateClient from "./Modals/createClient";
+import CreateClient from "./Modals/CreateClient";
 import EmployeeInfo from "./ClientEmployeeCarInfo/EmployeeInfo";
 import CarsInfo from "./ClientEmployeeCarInfo/CarsInfo";
 import CreateEmployeeModal from "./Modals/CreateEmployee";
@@ -10,7 +10,6 @@ import CreateCar from "./Modals/CreateCar";
 import EditClient from "./Modals/EditClient";
 import EditCar from "./Modals/EditCar";
 import EditEmployee from "./Modals/EditEmployee";
-
 
 export default function ClientEmployeeCars() {
   const [variante, setVariante] = useState<string>("cliente");
@@ -76,9 +75,7 @@ export default function ClientEmployeeCars() {
           onClick={() => {}}
           className="btn btn-ghost gap-2 tooltip"
           data-tip="Editar (no hace nada todavía)"
-        >
-          
-        </button>
+        ></button>
       </div>
 
       {variante === "cliente" && (
