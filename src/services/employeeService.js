@@ -17,3 +17,12 @@ export const updateemployee = async (employeeId, employeeData) => {
     return response.data
 }
 
+export const deleteEmployee = async (employeeId) => {
+    const response = await axios.delete(`${API_URL}/${employeeId}`)
+    return response.data
+}
+
+export const getEmployeeById = async (employeeId) => {
+    const response = await axios.get(`${API_URL}/${employeeId}`)
+    return response.data
+}

@@ -26,3 +26,13 @@ export const getRentedCars = async () => {
     const response = await axios.get(`${API_URL}/rented`)
     return response.data
 }
+
+export const deleteCar = async (id) => {
+    const response = await axios.delete(`${API_URL}/${id}`)
+    return response.data
+}
+
+export const getCarById = async (id) => {
+    const response = await axios.get(`${API_URL}/${id}`)
+    return response.data
+}

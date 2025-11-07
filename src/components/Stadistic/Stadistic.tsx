@@ -9,9 +9,11 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { useState } from "react";
 
 export default function Stadistic() {
   const [, setLocation] = useLocation();
+  const [verStadisticas, setVerStadisticas] = useState<boolean>(false);
 
   const data = [
     {
@@ -61,6 +63,11 @@ export default function Stadistic() {
   const handleBackArrow = () => {
     setLocation("/");
   };
+
+  const handleVerEstadisticas = () => {
+    setVerStadisticas(!verStadisticas);
+  };
+
   return (
     <div>
       <div className=" gap-2 flex items-center mb-4">
@@ -72,6 +79,10 @@ export default function Stadistic() {
           Registro y estadísticas
         </h1>
       </div>
+      <button className="btn " onClick={handleVerEstadisticas}>
+        Ver reportes
+      </button>
+      <h2 className="text-2xl font-mono font-semibold"></h2>
       <LineChart
         style={{
           width: "100%",

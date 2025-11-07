@@ -26,3 +26,9 @@ export const getAvailableClients = async () => {
   const response = await axios.get(`${API_URL}/available`);
   return response.data;
 }
+
+export const getClientById = async (id) => {
+    const response = await axios.get(`${API_URL}/${id}`);
+    return response.data;
+}
+
