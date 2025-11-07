@@ -5,8 +5,8 @@
   /* CSS Variables */
   --black: #1a1c20;
   --white: #fff;
-  --green: #00c380;
-  --d-green: #019b66;
+  --green: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --d-green: #9605f7;
   --gray: #c1c1c1;
   --l-gray: #c4c4c4;
   --m-gray: #373838;
@@ -19,11 +19,14 @@
   --n-road: -4em;
   --p-road: 7em;
 
-  background-color: var(--green);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   width: 100%;
-  height: 100vh;
+  height: 50vh;
   overflow: hidden;
   position: relative;
+  border-radius: 20px;
+  box-shadow: inset 0 0 50px rgba(255, 255, 255, 0.1),
+    0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* Ensure all children inherit box-sizing */
