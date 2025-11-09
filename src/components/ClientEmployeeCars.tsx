@@ -70,16 +70,7 @@ export default function ClientEmployeeCars() {
           </a>
         </li>
       </ul>
-      <div className="ml-2 mb-2">
-        <button
-          type="button"
-          onClick={() => {}}
-          className="btn btn-ghost gap-2 tooltip"
-          data-tip="Editar (no hace nada todavía)"
-        >
-          
-        </button>
-      </div>
+
 
       {variante === "cliente" && (
         <>

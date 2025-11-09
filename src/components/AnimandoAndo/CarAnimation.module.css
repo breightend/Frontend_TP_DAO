@@ -5,8 +5,8 @@
   /* CSS Variables */
   --black: #1a1c20;
   --white: #fff;
-  --green: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --d-green: #9605f7;
+  --green: #222d3f;
+  --d-green: #0f1e38;
   --gray: #c1c1c1;
   --l-gray: #c4c4c4;
   --m-gray: #373838;
@@ -19,7 +19,7 @@
   --n-road: -4em;
   --p-road: 7em;
 
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   width: 100%;
   height: 50vh;
   overflow: hidden;
@@ -39,7 +39,7 @@
 /* Car body - replaces body element */
 .carBody {
   margin: 0;
-  height: 100vh;
+  height: 100%;
   display: flex;
   overflow: hidden;
   position: relative;
@@ -129,7 +129,7 @@
       transparent 20%,
       var(--white) 20.5%,
       var(--white) 20.8%,
-      var(--green) 21.5%
+      #1a2537 21.5%
     ),
     /* ceiling=== */ /* ===antenna */
       radial-gradient(circle at center 100%, var(--black) 30%, transparent 0),

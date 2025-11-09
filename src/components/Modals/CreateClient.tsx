@@ -7,12 +7,15 @@ export default function createModal() {
     nombre: "",
     apellido: "",
     dni: "",
+    tipo_documento: "",
     email: "",
     telefono: "",
     fechaNacimiento: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
@@ -74,25 +77,10 @@ export default function createModal() {
                 <span className="label-text">Fecha Nacimiento</span>
               </label>
               <input
-                type="text"
+                type="date"
                 name="fechaNacimiento"
                 value={formData.fechaNacimiento}
                 onChange={handleChange}
-                placeholder="Ingrese la fecha de nacimiento"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            <div className="form-control w-full mb-4">
-              <label className="label">
-                <span className="label-text">Apellido</span>
-              </label>
-              <input
-                type="text"
-                name="apellido"
-                value={formData.apellido}
-                onChange={handleChange}
-                placeholder="Ingrese el apellido"
                 className="input input-bordered w-full"
               />
             </div>
@@ -109,6 +97,23 @@ export default function createModal() {
                 placeholder="Ingrese el DNI"
                 className="input input-bordered w-full"
               />
+            </div>
+
+            <div className="form-control w-full mb-4">
+              <label className="label">
+                <span className="label-text">Tipo documento</span>
+              </label>
+              <select
+                name="tipo_documento"
+                value={formData.tipo_documento}
+                onChange={handleChange}
+                className="select select-bordered w-full"
+              >
+                <option value="">Seleccione un tipo de documento</option>
+                <option value="DNI">DNI</option>
+                <option value="Pasaporte">Pasaporte</option>
+                <option value="Otro">Otro</option>
+              </select>
             </div>
 
             <div className="form-control w-full mb-4">
@@ -142,7 +147,9 @@ export default function createModal() {
 
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-primary mr-2" onClick={handleSubmit}>Guardar</button>
+              <button className="btn btn-primary mr-2" onClick={handleSubmit}>
+                Guardar
+              </button>
               <button className="btn">Cerrar</button>
             </form>
           </div>
