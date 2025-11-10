@@ -6,11 +6,11 @@ export default function createModal() {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
-    dni: "",
-    tipo_documento: "",
+    DNI: "",
     email: "",
     telefono: "",
     fechaNacimiento: "",
+    direccion: "",
   });
 
   const handleChange = (
@@ -25,7 +25,7 @@ export default function createModal() {
     } else if (name === "nombre" || name === "apellido") {
       const lettersOnly = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
       setFormData((prevData) => ({ ...prevData, [name]: lettersOnly }));
-    } else if (name === "dni") {
+    } else if (name === "DNI") {
       const numbersOnly = value.replace(/\D/g, "");
       const limitedValue = numbersOnly.slice(0, 8);
       setFormData((prevData) => ({ ...prevData, [name]: limitedValue }));
@@ -50,13 +50,8 @@ export default function createModal() {
       return false;
     }
 
-    if (!formData.dni.trim()) {
+    if (!formData.DNI.trim()) {
       alert("El DNI es obligatorio");
-      return false;
-    }
-
-    if (!formData.tipo_documento) {
-      alert("Debe seleccionar un tipo de documento");
       return false;
     }
 
@@ -69,6 +64,11 @@ export default function createModal() {
       alert("El teléfono es obligatorio");
       return false;
     }
+    
+    if (!formData.direccion.trim()) {
+      alert("La dirección es obligatoria");
+      return false;
+    }
 
     if (formData.nombre.trim().length < 2) {
       alert("El nombre debe tener al menos 2 caracteres");
@@ -77,6 +77,11 @@ export default function createModal() {
 
     if (formData.apellido.trim().length < 2) {
       alert("El apellido debe tener al menos 2 caracteres");
+      return false;
+    }
+    
+    if (formData.direccion.trim().length < 2) {
+      alert("La dirección debe tener al menos 2 caracteres");
       return false;
     }
 
@@ -100,7 +105,7 @@ export default function createModal() {
       return false;
     }
 
-    if (formData.dni.length < 7 || formData.dni.length > 8) {
+    if (formData.DNI.length < 7 || formData.DNI.length > 8) {
       alert("El DNI debe tener entre 7 y 8 dígitos");
       return false;
     }
@@ -131,11 +136,11 @@ export default function createModal() {
       setFormData({
         nombre: "",
         apellido: "",
-        dni: "",
-        tipo_documento: "",
+        DNI: "",
         email: "",
         telefono: "",
         fechaNacimiento: "",
+        direccion: "",
       });
       const modal = document.getElementById(
         "modal_cliente"
@@ -213,31 +218,28 @@ export default function createModal() {
               </label>
               <input
                 type="text"
-                name="dni"
-                value={formData.dni}
+                name="DNI"
+                value={formData.DNI}
                 onChange={handleChange}
                 placeholder="Solo números (7-8 dígitos)"
                 className="input input-bordered w-full"
                 required
               />
             </div>
-
+            
             <div className="form-control w-full mb-4">
               <label className="label">
-                <span className="label-text">Tipo documento *</span>
+                <span className="label-text">Direccion *</span>
               </label>
-              <select
-                name="tipo_documento"
-                value={formData.tipo_documento}
+              <input
+                type="text"
+                name="direccion"
+                value={formData.direccion}
                 onChange={handleChange}
-                className="select select-bordered w-full"
+                placeholder="Solo letras (mín. 2 caracteres)"
+                className="input input-bordered w-full"
                 required
-              >
-                <option value="">Seleccione un tipo de documento</option>
-                <option value="DNI">DNI</option>
-                <option value="Pasaporte">Pasaporte</option>
-                <option value="Otro">Otro</option>
-              </select>
+              />
             </div>
 
             <div className="form-control w-full mb-4">

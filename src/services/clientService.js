@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/clients";
+const API_URL = "http://localhost:5000/clients";
 
 export const getClients = async () => {
   const response = await axios.get(API_URL);
@@ -8,7 +8,7 @@ export const getClients = async () => {
 };
 
 export const createClient = async (clientData) => {
-  const response = await axios.post(API_URL, clientData);
+  const response = await axios.post(`${API_URL}/create`, clientData);
   return response.data;
 };
 
