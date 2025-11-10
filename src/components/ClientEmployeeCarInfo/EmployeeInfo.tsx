@@ -2,6 +2,18 @@ import { Search } from "lucide-react";
 import { getEmployees } from "../../services/employeeService";
 import { useEffect, useState } from "react";
 
+interface Employee {
+  nombre: string;
+  apellido: string;
+  fechaNacimiento: string;
+  DNI: string;
+  email: string;
+  telefono: string;
+  direccion: string;
+  puesto: string;
+  salario: string;
+  fechaInicioActividad: string;
+}
 export default function EmployeeInfo() {
   const [employees, setEmployees] = useState([]);
 
@@ -22,6 +34,8 @@ export default function EmployeeInfo() {
     event.preventDefault();
     // Implement search functionality here
   };
+  
+  console.log(employees)
 
   return (
     <>
@@ -57,22 +71,30 @@ export default function EmployeeInfo() {
               <th>DNI</th>
               <th>Email</th>
               <th>Teléfono</th>
-              <th>Fecha nacimiento </th>
+              <th>Fecha de Nacimiento</th>
+              <th>Dirección</th>
+              <th>Puesto</th>
+              <th>Salario</th>
+              <th>Fecha de Inicio de Actividad</th>
             </tr>
           </thead>
           <tbody>
-            {employees &&
-              employees.map((employee: any, index: number) => (
-                <tr key={employee.id}>
-                  <th>{index + 1}</th>
-                  <td>{employee.nombre}</td>
-                  <td>{employee.apellido}</td>
-                  <td>{employee.dni}</td>
-                  <td>{employee.email}</td>
-                  <td>{employee.telefono}</td>
-                </tr>
-              ))}
-          </tbody>
+            {employees &&employees.map((employee: Employee, index: number) => (
+              <tr key={employee.DNI}>
+                <th>{index + 1}</th>
+                <td>{employee.nombre}</td>
+                <td>{employee.apellido}</td>
+                <td>{employee.DNI}</td>
+                <td>{employee.email}</td>
+                <td>{employee.telefono}</td>
+                <td>{employee.fechaNacimiento}</td>
+                <td>{employee.direccion}</td>
+                <td>{employee.puesto}</td>
+                <td>{employee.salario}</td>
+                <td>{employee.fechaInicioActividad}</td>
+              </tr>
+            ))}
+            </tbody>
         </table>
       </div>
     </>

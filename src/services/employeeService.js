@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/employees';
+const API_URL = 'http://localhost:5000/employees';
 
 export const getEmployees = async () => {
     const response = await axios.get(API_URL)
@@ -8,7 +8,7 @@ export const getEmployees = async () => {
 }
 
 export const createEmployee = async (employeeData) => {
-    const response = await axios.post(API_URL, employeeData)
+    const response = await axios.post(`${API_URL}/create`, employeeData)
     return response.data
 }
 
