@@ -5,6 +5,7 @@ import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import CarAnimation from "./components/AnimandoAndo/CarAnimation";
 import ParticleBackground from "./components/ParticleBackground";
 import logo from "./images/logo.png";
+import { KeySquare } from "lucide-react";
 
 // Register the plugin
 gsap.registerPlugin(MotionPathPlugin);
@@ -149,19 +150,7 @@ function App() {
             </div>
 
             <div className="mt-6 text-center">
-              <p className="text-lg text-gray-700 mb-2">
-                Gestiona tu flota con estilo y eficiencia
-              </p>
-              <div className="flex justify-center space-x-4 text-sm text-gray-500">
-                <span className="flex items-center space-x-1">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span>Sistema activo</span>
-                </span>
-                <span>•</span>
-                <span>Última actualización: Hoy</span>
-                <span>•</span>
-                <span>Versión 2.0</span>
-              </div>
+              <div className="flex justify-center space-x-4 text-sm text-gray-500"></div>
             </div>
           </div>
         </div>
@@ -237,11 +226,11 @@ function App() {
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-green-500 font-medium">
-                        Gestionar →
+                        Gestionar
                       </span>
                       <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-500 transition-colors duration-300">
                         <span className="text-green-500 group-hover:text-white text-sm">
-                          🚗
+                          <KeySquare />
                         </span>
                       </div>
                     </div>

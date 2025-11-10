@@ -26,8 +26,6 @@ export default function Navbar() {
         </div>
         <div className="flex-none">
           <div className="hidden md:flex items-center space-x-1">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
-            <span className="text-xs text-green-400 font-medium">En línea</span>
           </div>
         </div>
       </div>
