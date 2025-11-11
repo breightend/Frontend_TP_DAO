@@ -5,6 +5,8 @@ import { Search } from "lucide-react";
 
 export default function ClientsInfo() {
   const [clients, setClients] = useState([]);
+  const [filteredClients, setFilteredClients] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
 
   useEffect(() => {
@@ -15,6 +17,7 @@ export default function ClientsInfo() {
     try {
       const clients = await getClients();
       setClients(clients);
+      setFilteredClients(clients);
     } catch (error) {
       console.error("Error fetching clients:", error);
     }
@@ -25,10 +28,36 @@ export default function ClientsInfo() {
     setSelectedClient(null);
   };
 
+  const filterClients = (term: string) => {
+    if (!term.trim()) {
+      setFilteredClients(clients);
+      return;
+    }
+
+    const filtered = clients.filter((client: any) => {
+      const searchLower = term.toLowerCase();
+      return (
+        client.nombre?.toLowerCase().includes(searchLower) ||
+        client.apellido?.toLowerCase().includes(searchLower) ||
+        client.dni?.toString().includes(term)
+      );
+    });
+
+    setFilteredClients(filtered);
+  };
+
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
-    // Implement search functionality here
-  }
+    filterClients(searchTerm);
+  };
+
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    filterClients(value);
+  };
 
   return (
     <>
@@ -41,7 +70,12 @@ export default function ClientsInfo() {
             <div>
               <label className="input validator join-item">
                 <Search className="mx-2" />
-                <input type="text" placeholder="4348..." required />
+                <input
+                  type="text"
+                  placeholder="Buscar por nombre, apellido o DNI..."
+                  value={searchTerm}
+                  onChange={handleSearchInputChange}
+                />
               </label>
               <div className="validator-hint hidden">
                 Ingrese parametro de busqueda
@@ -69,8 +103,8 @@ export default function ClientsInfo() {
             </tr>
           </thead>
           <tbody>
-            {clients &&
-              clients.map((client: any, index: number) => (
+            {filteredClients && filteredClients.length > 0 ? (
+              filteredClients.map((client: any, index: number) => (
                 <tr key={client.id}>
                   <th>{index + 1}</th>
                   <td>{client.nombre}</td>
@@ -88,7 +122,16 @@ export default function ClientsInfo() {
                     </button>
                   </td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan={8} className="text-center text-gray-500 py-4">
+                  {searchTerm
+                    ? "No se encontraron clientes con ese criterio de búsqueda"
+                    : "No hay clientes disponibles"}
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
