@@ -7,12 +7,15 @@ import ParticleBackground from "./components/ParticleBackground";
 import logo from "./images/logo.png";
 import { KeySquare } from "lucide-react";
 
-// Register the plugin
+
 gsap.registerPlugin(MotionPathPlugin);
 
 function App() {
   const [, setLocation] = useLocation();
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    const hasShownWelcome = sessionStorage.getItem("hasShownWelcome");
+    return !hasShownWelcome;
+  });
   const heroRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
@@ -60,6 +63,8 @@ function App() {
     // Timeout para mostrar contenido después de la animación de entrada
     const welcomeTimer = setTimeout(() => {
       setShowWelcome(false);
+      // Marcar que ya se mostró la bienvenida en esta sesión
+      sessionStorage.setItem("hasShownWelcome", "true");
     }, 3000);
 
     return () => clearTimeout(welcomeTimer);
@@ -121,7 +126,6 @@ function App() {
 
       {/* Contenido principal */}
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 relative z-10">
-        {/* Hero Section integrada con animación */}
         <div ref={heroRef} className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"></div>
 
@@ -140,7 +144,7 @@ function App() {
                   Polymorph-Rides
                 </h1>
                 <p className="text-xl text-gray-600 mt-2">
-                  🚗 El mismo auto, para muchos propósitos
+                  El mismo auto, para muchos propósitos
                 </p>
               </div>
             </div>
