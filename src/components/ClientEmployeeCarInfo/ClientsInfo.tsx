@@ -106,8 +106,8 @@ export default function ClientsInfo() {
             </button>
           </div>
         </div>
-        <table className="table">
-          <thead>
+        <table className="table rounded-2xl">
+          <thead className="bg-primary/25">
             <tr>
               <th>#</th>
               <th>Nombre</th>

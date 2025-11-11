@@ -1,8 +1,19 @@
-import { Search } from "lucide-react";
-import { getEmployees } from "../../services/employeeService";
+import {
+  Briefcase,
+  Calendar,
+  Clock,
+  Mail,
+  MapPin,
+  Phone,
+  Search,
+  User
+} from "lucide-react";
 import { useEffect, useState } from "react";
+import { getEmployees } from "../../services/employeeService";
+import SpecificEmployee from "../Modals/SpecificEmployee";
 
 interface Employee {
+  id: number;
   nombre: string;
   apellido: string;
   fechaNacimiento: string;
@@ -18,6 +29,10 @@ export default function EmployeeInfo() {
   const [employees, setEmployees] = useState([]);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
+    null
+  );
+  const [showEmployeeModal, setShowEmployeeModal] = useState(false);
 
   useEffect(() => {
     fetchEmployees();
@@ -61,11 +76,55 @@ export default function EmployeeInfo() {
   ) => {
     const value = event.target.value;
     setSearchTerm(value);
-    // Filter in real-time as user types
     filterEmployees(value);
   };
 
-  console.log(employees);
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString("es-AR");
+    } catch {
+      return dateString;
+    }
+  };
+
+  const formatSalary = (salary: string) => {
+    try {
+      const numSalary = parseFloat(salary);
+      return new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+      }).format(numSalary);
+    } catch {
+      return salary;
+    }
+  };
+
+  const getPuestoColor = (puesto: string) => {
+    const colors: { [key: string]: string } = {
+      Gerente: "badge-primary",
+      Manager: "badge-primary",
+      Supervisor: "badge-secondary",
+      Empleado: "badge-accent",
+      Vendedor: "badge-info",
+      Recepcionista: "badge-success",
+      default: "badge-ghost",
+    };
+    return colors[puesto] || colors["default"];
+  };
+
+  const handleViewEmployee = (employeeId: number) => {
+    setSelectedEmployeeId(employeeId);
+    setShowEmployeeModal(true);
+  };
+
+  const handleCloseEmployeeModal = () => {
+    setShowEmployeeModal(false);
+    setSelectedEmployeeId(null);
+  };
+
+  const handleEmployeeUpdated = () => {
+    fetchEmployees();
+  };
 
   return (
     <>
@@ -99,49 +158,165 @@ export default function EmployeeInfo() {
         </div>
         <table className="table">
           <thead>
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>DNI</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th>Fecha de Nacimiento</th>
-              <th>Dirección</th>
-              <th>Puesto</th>
-              <th>Salario</th>
-              <th>Fecha de Inicio de Actividad</th>
+            <tr className="bg-secondary/25 text-secondary-content">
+              <th className="text-center">#</th>
+              <th>
+                <div className="flex items-center gap-2">
+                  <User size={16} className="text-secondary-content" />
+                  Empleado
+                </div>
+              </th>
+              <th>
+                <div className="flex items-center gap-2">
+                  <Mail size={16} className="text-secondary-content" />
+                  Contacto
+                </div>
+              </th>
+              <th>
+                <div className="flex items-center gap-2">
+                  <Calendar size={16} className="text-secondary-content" />
+                  Fechas
+                </div>
+              </th>
+              <th>
+                <div className="flex items-center gap-2">
+                  <MapPin size={16} className="text-secondary-content" />
+                  Dirección
+                </div>
+              </th>
+              <th>
+                <div className="flex items-center gap-2">
+                  <Briefcase size={16} className="text-secondary-content" />
+                  Trabajo
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
             {filteredEmployees && filteredEmployees.length > 0 ? (
               filteredEmployees.map((employee: Employee, index: number) => (
-                <tr key={employee.DNI}>
-                  <th>{index + 1}</th>
-                  <td>{employee.nombre}</td>
-                  <td>{employee.apellido}</td>
-                  <td>{employee.DNI}</td>
-                  <td>{employee.email}</td>
-                  <td>{employee.telefono}</td>
-                  <td>{employee.fechaNacimiento}</td>
-                  <td>{employee.direccion}</td>
-                  <td>{employee.puesto}</td>
-                  <td>{employee.salario}</td>
-                  <td>{employee.fechaInicioActividad}</td>
+                <tr
+                  key={employee.DNI}
+                  className="hover:bg-base-200/50 cursor-pointer transition-colors"
+                  onDoubleClick={() => handleViewEmployee(employee.id)}
+                  title="Doble click para ver detalles"
+                >
+                  <th className="text-center text-base-content/60">
+                    {index + 1}
+                  </th>
+
+                  {/* Employee Info */}
+                  <td>
+                    <div className="flex flex-col">
+                      <div className="font-bold text-base">
+                        {employee.nombre} {employee.apellido}
+                      </div>
+                      <div className="text-sm text-base-content/60 flex items-center gap-1">
+                        <span>DNI:</span> {employee.DNI}
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Contact Info */}
+                  <td>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Mail size={14} className="text-info" />
+                        <span
+                          className="truncate max-w-[200px]"
+                          title={employee.email}
+                        >
+                          {employee.email}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Phone size={14} className="text-success" />
+                        <span>{employee.telefono}</span>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Dates */}
+                  <td>
+                    <div className="flex flex-col gap-1">
+                      <div className="text-sm">
+                        <span className="text-base-content/60">
+                          Nacimiento:
+                        </span>
+                        <div className="font-medium">
+                          {formatDate(employee.fechaNacimiento)}
+                        </div>
+                      </div>
+                      <div className="text-sm">
+                        <span className="text-base-content/60">Inicio:</span>
+                        <div className="font-medium flex items-center gap-1">
+                          <Clock size={12} className="text-warning" />
+                          {formatDate(employee.fechaInicioActividad)}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Address */}
+                  <td>
+                    <div className="flex items-start gap-2">
+                      <MapPin size={14} className="text-error mt-0.5" />
+                      <span
+                        className="text-sm max-w-[200px] truncate"
+                        title={employee.direccion}
+                      >
+                        {employee.direccion}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Job Info */}
+                  <td>
+                    <div className="flex flex-col gap-2">
+                      <span
+                        className={`badge ${getPuestoColor(
+                          employee.puesto
+                        )} badge-sm`}
+                      >
+                        {employee.puesto}
+                      </span>
+                      <div className="flex items-center gap-1 text-sm font-bold text-success">
+                        {formatSalary(employee.salario)}
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={11} className="text-center text-gray-500 py-4">
-                  {searchTerm
-                    ? "No se encontraron empleados con ese criterio de búsqueda"
-                    : "No hay empleados disponibles"}
+                <td colSpan={7} className="text-center text-gray-500 py-8">
+                  <div className="flex flex-col items-center gap-2">
+                    <User size={48} className="text-base-content/20" />
+                    <span className="text-lg">
+                      {searchTerm
+                        ? "No se encontraron empleados con ese criterio de búsqueda"
+                        : "No hay empleados disponibles"}
+                    </span>
+                    {searchTerm && (
+                      <span className="text-sm text-base-content/60">
+                        Intenta con otro término de búsqueda
+                      </span>
+                    )}
+                  </div>
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      <SpecificEmployee
+        employeeId={selectedEmployeeId}
+        isOpen={showEmployeeModal}
+        onClose={handleCloseEmployeeModal}
+        onDelete={handleEmployeeUpdated}
+        onEdit={handleEmployeeUpdated}
+      />
     </>
   );
 }

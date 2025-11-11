@@ -50,7 +50,7 @@ export default function CarsInfo() {
         </div>
         <table className="table">
           <thead>
-            <tr>
+            <tr className="bg-accent/50">
               <th>#</th>
               <th>Marca</th>
               <th>Modelo</th>
