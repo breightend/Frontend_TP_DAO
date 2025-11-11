@@ -1,13 +1,16 @@
 import { getClients } from "../../services/clientService";
 import { useEffect, useState } from "react";
 import EditClient from "../Modals/EditClient";
-import { Search } from "lucide-react";
+import SpecificClient from "../Modals/SpecificClient";
+import { Search, Trash2, Eye } from "lucide-react";
 
 export default function ClientsInfo() {
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
+  const [showClientModal, setShowClientModal] = useState(false);
 
   useEffect(() => {
     fetchClients();
@@ -59,6 +62,20 @@ export default function ClientsInfo() {
     filterClients(value);
   };
 
+  const handleViewClient = (clientId: number) => {
+    setSelectedClientId(clientId);
+    setShowClientModal(true);
+  };
+
+  const handleCloseClientModal = () => {
+    setShowClientModal(false);
+    setSelectedClientId(null);
+  };
+
+  const handleClientUpdated = () => {
+    fetchClients(); 
+  };
+
   return (
     <>
       <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -99,13 +116,17 @@ export default function ClientsInfo() {
               <th>Email</th>
               <th>Teléfono</th>
               <th>Fecha Nacimiento</th>
-              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {filteredClients && filteredClients.length > 0 ? (
               filteredClients.map((client: any, index: number) => (
-                <tr key={client.id}>
+                <tr
+                  key={client.id}
+                  className="hover:bg-base-200 cursor-pointer transition-colors"
+                  onDoubleClick={() => handleViewClient(client.id)}
+                  title="Doble click para ver detalles"
+                >
                   <th>{index + 1}</th>
                   <td>{client.nombre}</td>
                   <td>{client.apellido}</td>
@@ -113,14 +134,6 @@ export default function ClientsInfo() {
                   <td>{client.email}</td>
                   <td>{client.telefono}</td>
                   <td>{client.fechaNacimiento}</td>
-                  <td>
-                    <button
-                      className="btn btn-sm btn-ghost"
-                      onClick={() => setSelectedClient(client)}
-                    >
-                      Editar
-                    </button>
-                  </td>
                 </tr>
               ))
             ) : (
@@ -139,6 +152,14 @@ export default function ClientsInfo() {
       {selectedClient && (
         <EditClient client={selectedClient} onSuccess={handleEditSuccess} />
       )}
+
+      <SpecificClient
+        clientId={selectedClientId}
+        isOpen={showClientModal}
+        onClose={handleCloseClientModal}
+        onDelete={handleClientUpdated}
+        onEdit={handleClientUpdated}
+      />
     </>
   );
 }

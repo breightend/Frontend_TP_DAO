@@ -70,12 +70,10 @@ export default function ClientEmployeeCars() {
         </li>
       </ul>
 
-
       {variante === "cliente" && (
         <>
           <div className="flex mt-2 mb-2 gap-2 ">
             <CreateClient />
-            <EditClient />
           </div>
           <ClientsInfo />
         </>
@@ -84,7 +82,6 @@ export default function ClientEmployeeCars() {
         <>
           <div className="flex mt-2 mb-2">
             <CreateEmployeeModal />
-            <EditEmployee />
           </div>
           <EmployeeInfo />
         </>
@@ -93,13 +90,11 @@ export default function ClientEmployeeCars() {
         <>
           <div className="flex mt-2 mb-2">
             <CreateCar />
-            <EditCar />
           </div>
           <CarsInfo />
         </>
       )}
 
-      {/* Aca quiero importar la tabla segun corresponda de clientInfo y asi*/}
     </>
   );
 }
