@@ -1,18 +1,24 @@
 import { ArrowLeft, BriefcaseBusiness, Car, UserRound } from "lucide-react";
+import { useRef, useState } from "react";
 import { useLocation } from "wouter";
-import ClientsInfo from "./ClientEmployeeCarInfo/ClientsInfo";
-import { useState } from "react";
-import CreateClient from "./Modals/CreateClient";
-import EmployeeInfo from "./ClientEmployeeCarInfo/EmployeeInfo";
+import type { CarsInfoRef } from "./ClientEmployeeCarInfo/CarsInfo";
 import CarsInfo from "./ClientEmployeeCarInfo/CarsInfo";
-import CreateEmployeeModal from "./Modals/CreateEmployee";
+import ClientsInfo from "./ClientEmployeeCarInfo/ClientsInfo";
+import EmployeeInfo from "./ClientEmployeeCarInfo/EmployeeInfo";
 import CreateCar from "./Modals/CreateCar";
-import EditClient from "./Modals/EditClient";
-import EditCar from "./Modals/EditCar";
-import EditEmployee from "./Modals/EditEmployee";
+import CreateClient from "./Modals/CreateClient";
+import CreateEmployeeModal from "./Modals/CreateEmployee";
 
 export default function ClientEmployeeCars() {
   const [variante, setVariante] = useState<string>("cliente");
+  const carsInfoRef = useRef<CarsInfoRef>(null);
+
+  const handleCarCreated = () => {
+    if (carsInfoRef.current && carsInfoRef.current.fetchAutos) {
+      carsInfoRef.current.fetchAutos();
+    }
+  };
+
   const handleClientClick = () => {
     setVariante("cliente");
   };
@@ -89,12 +95,11 @@ export default function ClientEmployeeCars() {
       {variante === "auto" && (
         <>
           <div className="flex mt-2 mb-2">
-            <CreateCar />
+            <CreateCar onSuccess={handleCarCreated} />
           </div>
-          <CarsInfo />
+          <CarsInfo ref={carsInfoRef} />
         </>
       )}
-
     </>
   );
 }
