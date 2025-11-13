@@ -35,10 +35,6 @@ export default function AutosStadistics({
 
   return (
     <div className="mt-4 space-y-4">
-      <h2 className="text-2xl font-mono font-semibold text-center">
-        Vehículos más alquilados
-      </h2>
-
       {vehiculos.length === 0 ? (
         <p className="text-center text-gray-500">
           No hay registros de alquileres para los filtros seleccionados.
