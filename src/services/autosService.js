@@ -18,7 +18,7 @@ export const updateCar = async (id, autoData) => {
 }
 
 export const getAviableCars = async () => {
-    const response = await axios.get(`${API_URL}/available`)
+    const response = await axios.get(`${API_URL}`)
     return response.data
 }
 
