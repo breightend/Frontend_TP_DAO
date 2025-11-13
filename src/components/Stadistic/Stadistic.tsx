@@ -22,6 +22,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { jsPDF } from "jspdf";
 import AutosStadistics from "./AutosStadistics";
 import VentasStadistics from "./VentasStadistics";
 import {
@@ -67,6 +68,14 @@ const defaultFilters: Filters = {
   fechaHasta: "",
   periodicidad: "mes",
   incluirSanciones: true,
+};
+
+type ExportPayload = {
+  prefix: string;
+  title: string;
+  subtitle: string;
+  columns: string[];
+  rows: string[][];
 };
 
 type ReportKey = "alquileres" | "vehiculos" | "periodos" | "facturacion";
@@ -196,6 +205,11 @@ const InsightCard = ({ icon: Icon, title, highlight, description }: InsightCardP
     <p className="mt-3 text-sm leading-relaxed text-base-content/70">{description}</p>
   </article>
 );
+
+const buildFileName = (prefix: string, extension: "pdf") => {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+  return `${prefix}-${timestamp}.${extension}`;
+};
 
 export default function Stadistic() {
   const [, setLocation] = useLocation();
@@ -869,6 +883,222 @@ export default function Stadistic() {
     setFilters({ ...defaultFilters });
   };
 
+  const buildExportData = (): ExportPayload => {
+    const filterParts: string[] = [];
+    if (filters.dni) {
+      filterParts.push(`DNI ${filters.dni}`);
+    }
+    if (filters.fechaDesde || filters.fechaHasta) {
+      const desde = filters.fechaDesde ? formatDate(filters.fechaDesde) : "Inicio";
+      const hasta = filters.fechaHasta ? formatDate(filters.fechaHasta) : "Actualidad";
+      filterParts.push(`${desde} → ${hasta}`);
+    }
+    filterParts.push(filters.incluirSanciones ? "Incluye sanciones" : "Sin sanciones");
+    const subtitle = filterParts.filter(Boolean).join(" • ") || "Sin filtros adicionales";
+
+    switch (selectedReport) {
+      case "alquileres": {
+        const title = "Listado detallado de alquileres por cliente";
+        const columns = [
+          "Cliente",
+          "DNI",
+          "Email",
+          "Vehículo",
+          "Patente",
+          "Fechas",
+          "ID",
+          "Precio base",
+          "Sanciones",
+          "Total",
+        ];
+
+        const rows = ventasData.alquileres.map((alquiler) => [
+          `${alquiler.cliente?.nombre ?? ""} ${alquiler.cliente?.apellido ?? ""}`.trim() || "-",
+          alquiler.cliente?.dni ?? "-",
+          alquiler.cliente?.email ?? "-",
+          `${alquiler.vehiculo?.marca ?? ""} ${alquiler.vehiculo?.modelo ?? ""}`.trim() || "-",
+          alquiler.vehiculo?.patente ?? "-",
+          `${alquiler.fecha_inicio} → ${alquiler.fecha_fin}`,
+          `#${alquiler.id_alquiler}`,
+          formatCurrency(alquiler.precio_base),
+          formatCurrency(alquiler.total_sanciones),
+          formatCurrency(alquiler.total_general),
+        ]);
+
+        if (rows.length) {
+          const totalPrecioBase = ventasData.alquileres.reduce(
+            (accumulator, alquiler) => accumulator + alquiler.precio_base,
+            0
+          );
+          const totalSanciones = ventasData.alquileres.reduce(
+            (accumulator, alquiler) => accumulator + alquiler.total_sanciones,
+            0
+          );
+          const totalGeneral = ventasData.alquileres.reduce(
+            (accumulator, alquiler) => accumulator + alquiler.total_general,
+            0
+          );
+
+          rows.push([
+            "Totales",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            formatCurrency(totalPrecioBase),
+            formatCurrency(totalSanciones),
+            formatCurrency(totalGeneral),
+          ]);
+        }
+
+        return {
+          prefix: "alquileres-por-cliente",
+          title,
+          subtitle,
+          columns,
+          rows,
+        };
+      }
+      case "vehiculos": {
+        const title = "Vehículos más alquilados";
+        const columns = ["Ranking", "Marca", "Modelo", "Año", "Patente", "Alquileres"];
+        const rows = vehiculosData.map((vehiculo, index) => [
+          `${index + 1}`,
+          vehiculo.marca,
+          vehiculo.modelo,
+          String(vehiculo.anio ?? "-"),
+          vehiculo.patente ?? "-",
+          formatNumber(vehiculo.cantidad_alquileres),
+        ]);
+        return {
+          prefix: "vehiculos-mas-alquilados",
+          title,
+          subtitle,
+          columns,
+          rows,
+        };
+      }
+      case "periodos": {
+        const title = `Alquileres agrupados por ${filters.periodicidad === "mes" ? "mes" : "trimestre"}`;
+        const columns = ["Período", "Cantidad", "Total alquileres"];
+        const rows = alquileresPeriodo.map((registro) => [
+          registro.periodo,
+          formatNumber(registro.cantidad_alquileres),
+          formatCurrency(registro.total_alquileres),
+        ]);
+
+        if (rows.length) {
+          const totalCantidad = alquileresPeriodo.reduce(
+            (accumulator, registro) => accumulator + registro.cantidad_alquileres,
+            0
+          );
+          const totalMonto = alquileresPeriodo.reduce(
+            (accumulator, registro) => accumulator + registro.total_alquileres,
+            0
+          );
+          rows.push([
+            "Totales",
+            formatNumber(totalCantidad),
+            formatCurrency(totalMonto),
+          ]);
+        }
+
+        return {
+          prefix: `alquileres-por-${filters.periodicidad}`,
+          title,
+          subtitle,
+          columns,
+          rows,
+        };
+      }
+      case "facturacion":
+      default: {
+        const title = "Estadística de facturación mensual";
+        const columns = ["Período", "Alquileres", "Sanciones", "Descuentos", "Total"];
+        const rows = facturacionData.periodos.map((periodo) => [
+          periodo.periodo,
+          formatCurrency(periodo.total_alquileres),
+          formatCurrency(periodo.total_sanciones),
+          formatCurrency(periodo.total_descuentos ?? 0),
+          formatCurrency(periodo.total_general),
+        ]);
+
+        if (rows.length) {
+          rows.push([
+            "Acumulado",
+            formatCurrency(facturacionData.acumulado.total_alquileres),
+            formatCurrency(facturacionData.acumulado.total_sanciones),
+            formatCurrency(facturacionData.acumulado.total_descuentos),
+            formatCurrency(facturacionData.acumulado.total_general),
+          ]);
+        }
+
+        return {
+          prefix: "facturacion-mensual",
+          title,
+          subtitle,
+          columns,
+          rows,
+        };
+      }
+    }
+  };
+
+  const handleExportReport = () => {
+    const exportData = buildExportData();
+
+    if (!exportData.rows.length) {
+      window.alert("No hay datos disponibles para exportar en este reporte.");
+      return;
+    }
+
+    try {
+      const doc = new jsPDF({ unit: "pt", format: "a4" });
+      const margin = 48;
+      const maxWidth = doc.internal.pageSize.getWidth() - margin * 2;
+      const lineHeight = 16;
+      let y = margin;
+
+      const addText = (text: string, options?: { size?: number; bold?: boolean }) => {
+        const size = options?.size ?? 11;
+        const fontStyle = options?.bold ? "bold" : "normal";
+        doc.setFont("helvetica", fontStyle);
+        doc.setFontSize(size);
+        const lines = doc.splitTextToSize(text, maxWidth);
+        lines.forEach((line: string) => {
+          if (y > doc.internal.pageSize.getHeight() - margin) {
+            doc.addPage();
+            y = margin;
+          }
+          doc.text(line, margin, y);
+          y += lineHeight;
+        });
+      };
+
+      addText(exportData.title, { size: 18, bold: true });
+      addText(
+        `Generado: ${new Date().toLocaleString("es-AR", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}`
+      );
+      addText(exportData.subtitle);
+      y += 8;
+      addText(exportData.columns.join(" | "), { bold: true });
+
+      exportData.rows.forEach((row) => {
+        addText(row.join(" | "));
+      });
+
+      doc.save(buildFileName(exportData.prefix, "pdf"));
+    } catch (error) {
+      console.error("Error exporting report:", error);
+      window.alert("Ocurrió un error al exportar el reporte.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-100 via-base-200 to-base-300 p-6">
       <div className="mx-auto max-w-7xl space-y-8">
@@ -1045,9 +1275,13 @@ export default function Stadistic() {
           ) : null}
         </section>
 
-        <div className="flex items-center justify-end">
-          <button className="btn btn-outline btn-primary" type="button">
-            <Printer className="mr-2" /> Exportar reporte
+        <div className="flex justify-end">
+          <button
+            className="btn btn-primary btn-lg gap-2 shadow-lg shadow-primary/40"
+            type="button"
+            onClick={handleExportReport}
+          >
+            <Printer className="size-5" /> Exportar reporte en PDF
           </button>
         </div>
       </div>

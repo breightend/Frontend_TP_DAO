@@ -18,6 +18,7 @@
     "react-dom": "^19.1.1",
     "recharts": "^3.3.0",
     "tailwindcss": "^4.1.14",
+    "jspdf": "^2.5.2",
     "wouter": "^3.7.1"
   },
   "devDependencies": {
