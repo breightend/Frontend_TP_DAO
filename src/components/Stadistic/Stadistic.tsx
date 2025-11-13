@@ -148,18 +148,30 @@ interface MetricCardProps {
   title: string;
   value: string;
   helper?: string;
+  variant?: number;
 }
 
-const MetricCard = ({ icon: Icon, title, value, helper }: MetricCardProps) => (
-  <article className="flex min-h-[130px] flex-col justify-between rounded-2xl border border-base-200 bg-base-100 px-5 py-6 shadow-sm">
-    <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-base-content/60">
-      <span className="inline-flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+const gradientVariants = [
+  "from-blue-500 to-blue-600",
+  "from-emerald-500 to-emerald-600",
+  "from-amber-500 to-amber-600",
+  "from-purple-500 to-purple-600",
+];
+
+const MetricCard = ({ icon: Icon, title, value, helper, variant = 0 }: MetricCardProps) => (
+  <article
+    className={`flex min-h-[130px] flex-col justify-between rounded-2xl bg-gradient-to-r px-5 py-6 text-white shadow-lg shadow-black/10 transition hover:shadow-xl ${
+      gradientVariants[variant % gradientVariants.length]
+    }`}
+  >
+    <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-white/80">
+      <span className="inline-flex size-9 items-center justify-center rounded-full bg-white/15 text-white">
         <Icon className="size-5" />
       </span>
       {title}
     </div>
-    <div className="text-3xl font-semibold leading-tight text-base-content">{value}</div>
-    {helper ? <p className="text-sm text-base-content/60">{helper}</p> : null}
+    <div className="text-3xl font-semibold leading-tight">{value}</div>
+    {helper ? <p className="text-sm text-white/80">{helper}</p> : null}
   </article>
 );
 
@@ -773,42 +785,6 @@ export default function Stadistic() {
                 </div>
               ) : null}
 
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                <div className="stat rounded-2xl border border-base-200 bg-base-100">
-                  <div className="stat-title">Facturación por alquileres</div>
-                  <div className="stat-value text-primary">
-                    {formatCurrency(facturacionData.acumulado.total_alquileres)}
-                  </div>
-                  <div className="stat-desc">Subtotal sin sanciones</div>
-                </div>
-                <div className="stat rounded-2xl border border-base-200 bg-base-100">
-                  <div className="stat-title">Ingresos por sanciones</div>
-                  <div className="stat-value text-secondary">
-                    {formatCurrency(facturacionData.acumulado.total_sanciones)}
-                  </div>
-                  <div className="stat-desc">Se actualiza según el toggle</div>
-                </div>
-                <div className="stat rounded-2xl border border-base-200 bg-base-100">
-                  <div className="stat-title">Descuentos aplicados</div>
-                  <div className="stat-value text-info">
-                    {formatCurrency(facturacionData.acumulado.total_descuentos)}
-                  </div>
-                  <div className="stat-desc">Actualmente sin registros</div>
-                </div>
-                <div className="stat rounded-2xl border border-base-200 bg-base-100">
-                  <div className="stat-title">Total general</div>
-                  <div className="stat-value text-success">
-                    {formatCurrency(facturacionData.acumulado.total_general)}
-                  </div>
-                  <div className="stat-desc">Alquileres + sanciones</div>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-base-200 bg-base-100 p-5">
-                <h3 className="text-base font-semibold">Evolución por período</h3>
-                <p className="text-sm text-base-content/60">
-                  Compará alquileres, sanciones y total facturado en cada intervalo.
-                </p>
                 <div className="mt-4 h-[320px]">
                   {facturacionLoading ? (
                     <div className="flex h-full items-center justify-center text-base-content/50">
@@ -836,7 +812,6 @@ export default function Stadistic() {
                       </BarChart>
                     </ResponsiveContainer>
                   )}
-                </div>
               </div>
             </div>
           </div>
@@ -862,62 +837,53 @@ export default function Stadistic() {
   };
 
   return (
-    <div className="space-y-8 pb-12">
-      <header className="rounded-3xl border border-base-200 bg-base-100 shadow-lg">
-        <div className="px-6 py-8 sm:px-10">
-          <div className="flex flex-col gap-6">
-            <button
-              className="inline-flex size-11 items-center justify-center rounded-full border border-base-300 text-base-content/60 transition hover:border-base-400 hover:text-base-content"
-              onClick={handleBackArrow}
-              type="button"
-              aria-label="Volver al inicio"
-            >
-              <ArrowLeft className="size-5" />
-            </button>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div className="space-y-2">
-                <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
-                  Panel de insights
-                </span>
-                <h1 className="text-3xl font-semibold leading-tight text-base-content sm:text-4xl">
-                  Reportes de alquileres y facturación
-                </h1>
-                <p className="text-sm text-base-content/70 sm:text-base">
-                  Explorá el rendimiento del negocio y detectá tendencias en cuestión de segundos.
-                </p>
+    <div className="min-h-screen bg-gradient-to-br from-base-100 via-base-200 to-base-300 p-6">
+      <div className="mx-auto max-w-7xl space-y-8">
+        <header className="rounded-3xl border border-base-200 bg-white shadow-xl">
+          <div className="px-6 py-8 sm:px-10">
+            <div className="flex flex-col gap-6">
+              <button
+                className="btn btn-ghost w-fit gap-2 text-sm font-medium"
+                onClick={handleBackArrow}
+                type="button"
+              >
+                <ArrowLeft className="size-4" /> Volver al inicio
+              </button>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div className="space-y-2">
+                  <h1 className="text-4xl font-bold text-base-content">
+                    Gestión de reportes
+                  </h1>
+                  <p className="text-base text-base-content/70 max-w-2xl">
+                    Explorá el rendimiento del negocio, analizá la facturación y anticipá decisiones clave para tu flota.
+                  </p>
+                </div>
+                <div className="text-sm text-base-content/70">
+                  <span className="block text-xs uppercase tracking-wide">Última actualización</span>
+                  <span className="font-semibold text-base-content">
+                    {lastUpdate
+                      ? lastUpdate.toLocaleString("es-AR", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })
+                      : "Datos de demostración"}
+                  </span>
+                </div>
               </div>
-              <div className="text-sm text-base-content/70">
-                <span className="block text-xs uppercase tracking-wide">Actualizado</span>
-                <span className="font-semibold text-base-content">
-                  {lastUpdate
-                    ? lastUpdate.toLocaleString("es-AR", {
-                        dateStyle: "medium",
-                        timeStyle: "short",
-                      })
-                    : "Datos de demostración"}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {headerMetrics.map((metric) => (
-                <MetricCard key={metric.title} {...metric} />
-              ))}
             </div>
           </div>
-        </div>
-      </header>
-      <div className="space-y-8 px-4 sm:px-6 lg:px-10">
-        <section className="space-y-3">
-          <nav className="menu menu-horizontal rounded-box bg-base-200 p-2">
+        </header>
+
+        <section className="space-y-3 rounded-3xl bg-white p-4 shadow-lg">
+          <nav className="flex flex-wrap items-center gap-3">
             {reportOptions.map((option) => (
               <button
                 key={option.key}
                 type="button"
-                className={`btn btn-circle tooltip transition ${
+                className={`btn btn-circle border-none shadow-sm transition ${
                   selectedReport === option.key
                     ? "btn-primary text-base-100"
-                    : "btn-ghost text-base-content/70 hover:text-base-content"
+                    : "btn-ghost bg-base-100 text-base-content/70 hover:bg-base-200 hover:text-base-content"
                 }`}
                 data-tip={option.label}
                 aria-pressed={selectedReport === option.key}
@@ -934,7 +900,7 @@ export default function Stadistic() {
           ) : null}
         </section>
 
-        <section className="card border border-base-200 bg-base-100 shadow-sm">
+        <section className="rounded-3xl border border-base-200 bg-white shadow-lg">
           <div className="card-body space-y-6">
             <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -1024,6 +990,16 @@ export default function Stadistic() {
             ) : null}
           </div>
         </section>
+
+        {headerMetrics.length ? (
+          <section className="rounded-3xl bg-white p-6 shadow-lg">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {headerMetrics.map((metric, index) => (
+                <MetricCard key={metric.title} variant={index} {...metric} />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="grid gap-6 xl:grid-cols-[2fr,1fr]">
           <div className="space-y-6">{renderReportContent()}</div>
