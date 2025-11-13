@@ -54,14 +54,6 @@ export default function VentasStadistics({
     return <p className="text-center text-gray-500">Cargando información de ventas...</p>;
   }
 
-  if (error) {
-    return (
-      <p className="text-center text-error font-semibold">
-        {error}
-      </p>
-    );
-  }
-
   const totalGeneral = alquileres.reduce(
     (acc, alquiler) => acc + alquiler.total_general,
     0
@@ -86,6 +78,12 @@ export default function VentasStadistics({
               Cada alquiler con información del cliente, vehículo, fechas y montos asociados.
             </p>
           </div>
+
+          {error ? (
+            <div className="alert alert-warning text-sm">
+              <span>{error}</span>
+            </div>
+          ) : null}
 
           {alquileres.length === 0 ? (
             <p className="text-center text-gray-500">
