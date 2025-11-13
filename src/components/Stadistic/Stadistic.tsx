@@ -269,8 +269,17 @@ export default function Stadistic() {
       let refreshedAny = false;
 
       if (alquileresResult.status === "fulfilled") {
-        setVentasData(alquileresResult.value);
-        refreshedAny = true;
+        const value = alquileresResult.value;
+        const isEmptyResponse =
+          !value?.alquileres?.length && !value?.resumen_clientes?.length;
+
+        if (isEmptyResponse) {
+          setVentasData(clone(mockAlquileresResponse));
+          setVentasError("Mostrando datos de referencia. No hay alquileres registrados para los filtros actuales.");
+        } else {
+          setVentasData(value);
+          refreshedAny = true;
+        }
       } else {
         setVentasData(clone(mockAlquileresResponse));
         setVentasError(
@@ -281,8 +290,16 @@ export default function Stadistic() {
       setVentasLoading(false);
 
       if (vehiculosResult.status === "fulfilled") {
-        setVehiculosData(vehiculosResult.value);
-        refreshedAny = true;
+        const value = vehiculosResult.value;
+        const isEmptyResponse = !value?.length;
+
+        if (isEmptyResponse) {
+          setVehiculosData(clone(mockVehiculosMasAlquilados));
+          setAutosError("Mostrando datos de referencia. No hay vehículos con alquileres en el período seleccionado.");
+        } else {
+          setVehiculosData(value);
+          refreshedAny = true;
+        }
       } else {
         setVehiculosData(clone(mockVehiculosMasAlquilados));
         setAutosError(
@@ -293,8 +310,16 @@ export default function Stadistic() {
       setAutosLoading(false);
 
       if (facturacionResult.status === "fulfilled") {
-        setFacturacionData(facturacionResult.value);
-        refreshedAny = true;
+        const value = facturacionResult.value;
+        const isEmptyResponse = !value?.periodos?.length;
+
+        if (isEmptyResponse) {
+          setFacturacionData(buildMockFacturacion(filters.incluirSanciones));
+          setFacturacionError("Mostrando datos de referencia. No hay movimientos de facturación para los filtros elegidos.");
+        } else {
+          setFacturacionData(value);
+          refreshedAny = true;
+        }
       } else {
         setFacturacionData(buildMockFacturacion(filters.incluirSanciones));
         setFacturacionError(
@@ -305,8 +330,16 @@ export default function Stadistic() {
       setFacturacionLoading(false);
 
       if (periodoResult.status === "fulfilled") {
-        setAlquileresPeriodo(periodoResult.value);
-        refreshedAny = true;
+        const value = periodoResult.value;
+        const isEmptyResponse = !value?.length;
+
+        if (isEmptyResponse) {
+          setAlquileresPeriodo(clone(mockAlquileresPorPeriodo));
+          setPeriodoError("Mostrando datos de referencia. No hay agrupamientos disponibles para los filtros aplicados.");
+        } else {
+          setAlquileresPeriodo(value);
+          refreshedAny = true;
+        }
       } else {
         setAlquileresPeriodo(clone(mockAlquileresPorPeriodo));
         setPeriodoError(
