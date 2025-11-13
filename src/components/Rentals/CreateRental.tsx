@@ -1,10 +1,25 @@
-import { useState, useEffect } from "react";
-import { getAvailableClients } from "../../services/clientService";
+import { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
+import { getClients } from "../../services/clientService";
 import { getAviableCars } from "../../services/autosService";
 import { getEmployees } from "../../services/employeeService";
-import { createRental, submitRentalDates } from "../../services/rentalService";
+import { createRental } from "../../services/rentalService";
 import { useLocation } from "wouter";
 import { ArrowLeft, Car } from "lucide-react";
+import type { Client } from "../../services/clientService.d";
+
+interface CarOption {
+  id: number;
+  marca: string;
+  modelo: string;
+  patente: string;
+}
+
+interface EmployeeOption {
+  id: number;
+  legajo: string;
+  nombre: string;
+  apellido: string;
+}
 
 export default function CreateRental() {
   const [, setLocation] = useLocation();
@@ -18,16 +33,16 @@ export default function CreateRental() {
     empleado: "",
   });
 
-  const [client, setClient] = useState([]);
-  const [car, setCar] = useState([]);
-  const [employee, setEmployee] = useState([]);
+  const [client, setClient] = useState<Client[]>([]);
+  const [car, setCar] = useState<CarOption[]>([]);
+  const [employee, setEmployee] = useState<EmployeeOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const clientData = await getAvailableClients();
+        const clientData = await getClients();
         setClient(clientData);
 
         const carsData = await getAviableCars();
@@ -47,9 +62,7 @@ export default function CreateRental() {
     setLocation("/car-rentals");
   };
 
-  const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleFormChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -67,26 +80,10 @@ export default function CreateRental() {
       return false;
     }
 
-    try {
-      setIsLoading(true);
-      setError("");
-
-      await submitRentalDates({
-        fechaInicio: formData.fechaInicio,
-        fechaFin: formData.fechaFin,
-      });
-
-      return true;
-    } catch (error) {
-      console.error("Error validating dates:", error);
-      setError("Error al validar las fechas en el servidor");
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+    return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const fechasValidas = await handleDateValidation();
@@ -111,7 +108,7 @@ export default function CreateRental() {
       <div className="flex mt-2 gap-2">
         <button
           className="btn btn-circle btn-neutral tooltip"
-          clientData-tip="Volver"
+          data-tip="Volver"
           onClick={handleVolver}
         >
           <ArrowLeft />
@@ -165,13 +162,12 @@ export default function CreateRental() {
             disabled={isLoading}
           >
             <option value="">Seleccione un cliente</option>
-            {client &&
-              client.map((client: any) => (
+            {client?.map((client: Client) => (
                 <option key={client.id} value={client.id}>
                   {client.nombre} {client.apellido}
                 </option>
               ))}
-            {client.length === 0 && (
+            {client?.length === 0 && (
               <option disabled>No hay clientes registrados</option>
             )}
           </select>
@@ -226,13 +222,12 @@ export default function CreateRental() {
             disabled={isLoading}
           >
             <option value="">Seleccione un auto</option>
-            {car &&
-              car.map((car: any) => (
-                <option key={car.id} value={car.id}>
-                  {car.marca} {car.modelo} {car.patente}
+            {car?.map((carItem) => (
+                <option key={carItem.id} value={carItem.id}>
+                  {carItem.marca} {carItem.modelo} {carItem.patente}
                 </option>
               ))}
-            {car.length === 0 && (
+            {car?.length === 0 && (
               <option disabled>No hay autos registrados</option>
             )}
           </select>
@@ -248,13 +243,12 @@ export default function CreateRental() {
             disabled={isLoading}
           >
             <option value="">Seleccione un empleado</option>
-            {employee &&
-              employee.map((employee: any) => (
-                <option key={employee.id} value={employee.id}>
-                  {employee.legajo} {employee.nombre} {employee.apellido}
+            {employee?.map((employeeItem) => (
+                <option key={employeeItem.id} value={employeeItem.id}>
+                  {employeeItem.legajo} {employeeItem.nombre} {employeeItem.apellido}
                 </option>
               ))}
-            {employee.length === 0 && (
+            {employee?.length === 0 && (
               <option disabled>No hay empleados registrados</option>
             )}
           </select>
