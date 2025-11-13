@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "../../services/clientService";
 
-export default function createModal() {
+export default function CreateClient() {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -158,7 +158,10 @@ export default function createModal() {
         className="ml-4 btn btn-neutral btn-circle tooltip transform hover:rotate-180 transition-transform duration-300"
         datatype="Agregar cliente"
         title="Agregar cliente"
-        onClick={() => document.getElementById("modal_cliente").showModal()}
+        onClick={() => {
+          const modal = document.getElementById("modal_cliente") as HTMLDialogElement | null;
+          modal?.showModal();
+        }}
       >
         <Plus />
       </button>
