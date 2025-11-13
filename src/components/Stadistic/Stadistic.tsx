@@ -22,7 +22,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { jsPDF } from "jspdf";
+import jsPDF from "jspdf";
 import AutosStadistics from "./AutosStadistics";
 import VentasStadistics from "./VentasStadistics";
 import {
