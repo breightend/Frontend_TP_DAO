@@ -182,10 +182,9 @@ export default function SpecificCar({
 
   return (
     <div className="modal modal-open">
-      <div className="modal-box max-w-4xl max-h-[95vh] p-0 overflow-hidden">
-        {/* Header con botón cerrar */}
-        <div className="flex justify-between items-center p-6 border-b bg-base-100  top-0 z-20 shadow-sm">
-          <h3 className="font-bold text-xl">Detalles del Auto</h3>
+      <div className="modal-box bg-gradient-to-b from-gray-100 to-gray-200 max-w-4xl max-h-[95vh] p-0 overflow-hidden">
+        <div className="flex justify-between items-center p-6 border-b   top-0 z-20 shadow-sm">
+          <h3 className="font-bold text-xl text-gray-800">Detalles del Auto</h3>
           <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle">
             <X size={18} />
           </button>
@@ -205,76 +204,64 @@ export default function SpecificCar({
           )}
 
           {car && (
-            <div className="card bg-base-100 shadow-sm">
-              {/* Imagen del auto */}
-              <figure className="h-90 overflow-hidden bg-gradient-to-br from-slate-100 via-gray-50 to-slate-200 flex items-center justify-center  top-0 z-10">
-                {/* Fondo decorativo */}
-                <div className="absolute inset-0 opacity-20">
-                  <div className="absolute top-4 left-4 w-16 h-16 bg-blue-200 rounded-full blur-xl"></div>
-                  <div className="absolute bottom-4 right-4 w-20 h-20 bg-purple-200 rounded-full blur-xl"></div>
-                  <div className="absolute top-1/2 left-1/3 w-12 h-12 bg-green-200 rounded-full blur-lg"></div>
-                </div>
-
-                {/* Sombra sutil debajo del auto */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-3/4 h-4 bg-black opacity-10 rounded-full blur-md"></div>
-
+            <div className="card shadow-sm">
+              <figure className="h-90 overflow-hidden flex items-center justify-center  top-0 z-10">
                 <img
                   src={getImageUrl()}
                   alt={`${car.marca} ${car.modelo}`}
                   className="w-[150%] h-[150%] object-contain relative z-10 drop-shadow-lg scale-130"
                 />
 
-                {/* Overlay gradient sutil */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
               </figure>
 
-              {/* Información del auto */}
               <div className="card-body p-8">
-                <h2 className="card-title text-2xl mb-6">
+                <h2 className="card-title text-2xl text-gray-800 mb-6">
                   <Car className="w-8 h-8" />
                   {car.marca} {car.modelo}
                 </h2>
 
-                {/* Grid de información básica */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                  <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                    <Hash className="w-5 h-5 text-gray-500" />
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-300">
+                    <Hash className="w-5 h-5 text-gray-600" />
                     <div>
-                      <span className="font-medium text-sm text-gray-600">
+                      <span className="font-medium text-sm text-gray-700">
                         Patente:
                       </span>
-                      <div className="badge badge-outline font-mono text-base">
+                      <div className="badge badge-outline font-mono text-base text-gray-800">
                         {car.patente}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                    <Calendar className="w-5 h-5 text-gray-500" />
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-300">
+                    <Calendar className="w-5 h-5 text-gray-600" />
                     <div>
-                      <span className="font-medium text-sm text-gray-600">
+                      <span className="font-medium text-sm text-gray-700">
                         Año:
                       </span>
-                      <div className="text-base font-semibold">{car.anio}</div>
+                      <div className="text-base font-semibold text-gray-800">
+                        {car.anio}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                    <Palette className="w-5 h-5 text-gray-500" />
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-300">
+                    <Palette className="w-5 h-5 text-gray-600" />
                     <div>
-                      <span className="font-medium text-sm text-gray-600">
+                      <span className="font-medium text-sm text-gray-700">
                         Color:
                       </span>
-                      <div className="text-base font-semibold capitalize">
+                      <div className="text-base font-semibold capitalize text-gray-800">
                         {car.color}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                    <DollarSign className="w-5 h-5 text-gray-500" />
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-300">
+                    <DollarSign className="w-5 h-5 text-gray-600" />
                     <div>
-                      <span className="font-medium text-sm text-gray-600">
+                      <span className="font-medium text-sm text-gray-700">
                         Costo:
                       </span>
                       <div className="text-base font-semibold text-success">
@@ -283,10 +270,10 @@ export default function SpecificCar({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                    <Factory className="w-5 h-5 text-gray-500" />
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-gray-300">
+                    <Factory className="w-5 h-5 text-gray-600" />
                     <div>
-                      <span className="font-medium text-sm text-gray-600">
+                      <span className="font-medium text-sm text-gray-700">
                         Mantenimiento:
                       </span>
                       <div className="badge badge-info text-sm">
@@ -296,9 +283,9 @@ export default function SpecificCar({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 p-6 bg-base-200 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 p-6 bg-white rounded-lg shadow-sm border border-gray-300">
                   <div>
-                    <h4 className="font-semibold flex items-center gap-2 mb-3 text-lg">
+                    <h4 className="font-semibold flex items-center gap-2 mb-3 text-lg text-gray-800">
                       <CheckCircle className="w-5 h-5" />
                       Estado
                     </h4>
@@ -311,7 +298,7 @@ export default function SpecificCar({
                         >
                           {car.estado.nombre}
                         </span>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-700">
                           <strong>Ámbito:</strong> {car.estado.ambito}
                         </p>
                       </div>
@@ -323,7 +310,7 @@ export default function SpecificCar({
                   </div>
 
                   <div>
-                    <h4 className="font-semibold flex items-center gap-2 mb-3 text-lg">
+                    <h4 className="font-semibold flex items-center gap-2 mb-3 text-lg text-gray-800">
                       <Shield className="w-5 h-5" />
                       Seguro
                     </h4>
@@ -332,7 +319,7 @@ export default function SpecificCar({
                         <p className="font-medium text-base">
                           {car.seguro.descripcion}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-700">
                           <strong>{car.seguro.tipo_descripcion}</strong>
                         </p>
                         <p className="text-success font-semibold">
@@ -340,15 +327,15 @@ export default function SpecificCar({
                         </p>
                       </div>
                     ) : (
-                      <p className="text-gray-500">Sin información de seguro</p>
+                      <p className="text-gray-600">Sin información de seguro</p>
                     )}
                   </div>
                 </div>
 
                 {/* Historial - Colapsible */}
-                <div className="collapse collapse-arrow bg-base-200 mb-6 border border-base-300">
+                <div className="collapse collapse-arrow bg-white mb-6 border border-gray-300 shadow-sm">
                   <input type="checkbox" />
-                  <div className="collapse-title text-xl font-medium flex items-center gap-3 py-4">
+                  <div className="collapse-title text-xl font-medium flex items-center gap-3 py-4 text-gray-800">
                     <Users className="w-6 h-6" />
                     Historial de Alquileres (
                     {car.historial_alquileres?.length || 0})
@@ -409,9 +396,9 @@ export default function SpecificCar({
                 </div>
 
                 {/* Historial de Mantenimientos */}
-                <div className="collapse collapse-arrow bg-base-200 mb-6 border border-base-300">
+                <div className="collapse collapse-arrow bg-white mb-6 border border-gray-300 shadow-sm">
                   <input type="checkbox" />
-                  <div className="collapse-title text-xl font-medium flex items-center gap-3 py-4">
+                  <div className="collapse-title text-xl font-medium flex items-center gap-3 py-4 text-gray-800">
                     <Activity className="w-6 h-6" />
                     Historial de Mantenimientos (
                     {car.historial_mantenimientos?.length || 0})
@@ -471,7 +458,7 @@ export default function SpecificCar({
                 </div>
 
                 {/* Acciones */}
-                <div className="card-actions justify-between mt-8 pt-6 border-t border-base-300">
+                <div className="card-actions justify-between mt-8 pt-6 border-t border-gray-300">
                   <div className="flex gap-3">
                     {onEdit && (
                       <button

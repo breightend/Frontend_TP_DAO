@@ -7,7 +7,6 @@ import ParticleBackground from "./components/ParticleBackground";
 import logo from "./images/logo.png";
 import { KeySquare } from "lucide-react";
 
-
 gsap.registerPlugin(MotionPathPlugin);
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
   const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Animación de entrada del hero
     if (heroRef.current) {
       gsap.fromTo(
         heroRef.current,
@@ -39,7 +37,6 @@ function App() {
       );
     }
 
-    // Animación de entrada de las tarjetas con delay
     if (cardsRef.current) {
       gsap.fromTo(
         cardsRef.current.children,
@@ -60,12 +57,10 @@ function App() {
       );
     }
 
-    // Timeout para mostrar contenido después de la animación de entrada
     const welcomeTimer = setTimeout(() => {
       setShowWelcome(false);
-      // Marcar que ya se mostró la bienvenida en esta sesión
       sessionStorage.setItem("hasShownWelcome", "true");
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(welcomeTimer);
   }, []);
@@ -88,7 +83,6 @@ function App() {
 
   return (
     <>
-      {/* Overlay de bienvenida */}
       {showWelcome && (
         <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 z-50 flex items-center justify-center">
           <div className="text-center space-y-6 animate-pulse">
@@ -121,31 +115,18 @@ function App() {
         </div>
       )}
 
-      {/* Fondo de partículas animadas */}
       <ParticleBackground />
 
-      {/* Contenido principal */}
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 relative z-10">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 relative z-10">
         <div ref={heroRef} className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-700/10 to-gray-700/10"></div>
 
           <div className="relative z-10 flex flex-col items-center justify-center pt-8 pb-4">
             <div className="flex items-center space-x-4 mb-6">
-              <div className="relative">
-                <img
-                  src={logo}
-                  alt="Polymorph-Rides Logo"
-                  className="w-16 h-16 object-contain filter drop-shadow-lg"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full animate-pulse"></div>
-              </div>
               <div>
-                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Polymorph-Rides
-                </h1>
-                <p className="text-xl text-gray-600 mt-2">
-                  El mismo auto, para muchos propósitos
-                </p>
+                <h2 className="text-3xl font-semibold font-serif text-white mt-2">
+                  "El mismo auto, para muchos propósitos"
+                </h2>
               </div>
             </div>
 
@@ -162,8 +143,8 @@ function App() {
         {/* Cards Section mejorada */}
         <div className="px-8 pb-12">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-              Explora nuestros servicios
+            <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              Funcionalidades
             </h2>
 
             <div

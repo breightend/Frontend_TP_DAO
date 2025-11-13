@@ -60,7 +60,6 @@ const CarsInfo = forwardRef<CarsInfoRef>((_props, ref) => {
     fetchAutos();
   }, []);
 
-  // Update filtered autos when autos array changes
   useEffect(() => {
     if (searchTerm) {
       filterAutos(searchTerm);
@@ -81,11 +80,9 @@ const CarsInfo = forwardRef<CarsInfoRef>((_props, ref) => {
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
-    // Search is handled in real-time by handleSearchChange
-    // This is just to prevent form submission
+
   };
 
-  // Clear search
   const clearSearch = () => {
     setSearchTerm("");
     setFilteredAutos(autos);

@@ -1,4 +1,10 @@
-import { ArrowLeft, BriefcaseBusiness, Car, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  BriefcaseBusiness,
+  Car,
+  Shield,
+  UserRound,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { useLocation } from "wouter";
 import type { CarsInfoRef } from "./ClientEmployeeCarInfo/CarsInfo";
@@ -10,7 +16,7 @@ import CreateClient from "./Modals/CreateClient";
 import CreateEmployeeModal from "./Modals/CreateEmployee";
 
 export default function ClientEmployeeCars() {
-  const [variante, setVariante] = useState<string>("cliente");
+  const [variante, setVariante] = useState<string>("auto");
   const carsInfoRef = useRef<CarsInfoRef>(null);
 
   const handleCarCreated = () => {
@@ -94,8 +100,11 @@ export default function ClientEmployeeCars() {
       )}
       {variante === "auto" && (
         <>
-          <div className="flex mt-2 mb-2">
+          <div className="flex gap-4 mt-2 mb-2">
             <CreateCar onSuccess={handleCarCreated} />
+            <button className="btn btn-circle btn-neutral tooltip" title="Seguros" onClick={() => setLocation("/car-insurance")}>
+              <Shield />
+            </button>
           </div>
           <CarsInfo ref={carsInfoRef} />
         </>

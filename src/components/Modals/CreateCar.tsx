@@ -24,7 +24,6 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
   const [error, setError] = useState("");
   const [dragError, setDragError] = useState("");
 
-  // Configuración de Dropzone
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
     setDragError("");
 
@@ -44,7 +43,6 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
       const file = acceptedFiles[0];
       setSelectedImage(file);
 
-      // Crear preview
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target?.result as string);
@@ -89,7 +87,6 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
     setDragError("");
 
     try {
-      // Validación adicional de patente
       const patenteRegex = /^[A-Z]{2,3}[0-9]{3}[A-Z]{0,2}$/;
       if (!patenteRegex.test(formData.patente)) {
         setError("La patente debe tener el formato ABC123 o AB123CD");
@@ -97,10 +94,8 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
         return;
       }
 
-      // Crear FormData para envío multipart/form-data
       const formDataToSend = new FormData();
 
-      // Agregar campos del auto
       formDataToSend.append("marca", formData.marca);
       formDataToSend.append("modelo", formData.modelo);
       formDataToSend.append("anio", formData.anio);
@@ -112,15 +107,20 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
         formData.periodicidadMantenimineto
       );
 
-      // Agregar imagen si existe
       if (selectedImage) {
         formDataToSend.append("imagen", selectedImage);
       }
 
       const response = await createAuto(formDataToSend);
 
-      if (response.success) {
-        // Cerrar modal
+    
+      if (
+        response ||
+        response === null ||
+        response === undefined ||
+        response === ""
+      ) {
+
         const modal = document.getElementById(
           "modal_auto"
         ) as HTMLDialogElement;
@@ -128,7 +128,6 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
           modal.close();
         }
 
-        // Limpiar formulario
         setFormData({
           marca: "",
           modelo: "",
@@ -143,10 +142,15 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
         setSelectedImage(null);
         setImagePreview(null);
 
-        // Notificar éxito
+        // Limpiar errores
+        setError("");
+        setDragError("");
+
         if (onSuccess) {
           onSuccess();
         }
+
+        console.log("Auto creado exitosamente y modal cerrado");
       }
     } catch (error: any) {
       console.error("Error creating auto:", error);
@@ -203,11 +207,9 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
       periodicidadMantenimineto: "",
     });
 
-    // Limpiar imagen
     setSelectedImage(null);
     setImagePreview(null);
 
-    // Limpiar errores
     setError("");
     setDragError("");
 
@@ -220,8 +222,7 @@ export default function CreateCar({ onSuccess }: CreateCarProps) {
   return (
     <>
       <button
-        className="ml-4 btn btn-neutral btn-circle tooltip transform hover:rotate-180 transition-transform duration-300"
-        data-tip="Agregar auto"
+        className="ml-4 btn btn-neutral btn-circle transform hover:rotate-180 transition-transform duration-300"
         title="Agregar auto"
         onClick={openModal}
       >

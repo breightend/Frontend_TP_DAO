@@ -10,6 +10,7 @@ import Stadistic from "./components/Stadistic/Stadistic.tsx";
 import CreateRental from "./components/Rentals/CreateRental.tsx";
 import AddSancion from "./components/Rentals/Sancion.tsx";
 import CarMaintenance from "./components/CarMaintenance/CarMaintance.tsx";
+import Seguros from "./components/Seguros.tsx";
 
 
 
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
       <Route path="/add-rental" component={CreateRental} />
       <Route path="/add-sancion" component={AddSancion} />
       <Route path="/car-maintenance" component={CarMaintenance} />
+      <Route path="/car-insurance" component={Seguros} />
     </Router>
   </StrictMode>
 );
