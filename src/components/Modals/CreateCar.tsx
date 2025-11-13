@@ -1,122 +1,497 @@
-import { HardDrive, Plus, Save } from "lucide-react";
-import { useState } from "react";
+import { Plus, Save, Upload, X } from "lucide-react";
+import { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 import { createAuto } from "../../services/autosService";
 
-export default function createModal() {
+interface CreateCarProps {
+  onSuccess?: () => void;
+}
+
+export default function CreateCar({ onSuccess }: CreateCarProps) {
   const [formData, setFormData] = useState({
-    marca : "",
-    modelo : "",
-    anio : "",
-    color : "",
-    patente : "",
+    marca: "",
+    modelo: "",
+    anio: "",
+    color: "",
+    costo: "",
+    patente: "",
+    periodicidadMantenimineto: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  }
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [dragError, setDragError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      createAuto(formData);
-    } catch (error) {
-      console.error("Error creating auto:", error);
+  // Configuración de Dropzone
+  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
+    setDragError("");
+
+    if (rejectedFiles.length > 0) {
+      const rejection = rejectedFiles[0];
+      if (rejection.errors[0]?.code === "file-too-large") {
+        setDragError("El archivo es demasiado grande. Máximo 5MB.");
+      } else if (rejection.errors[0]?.code === "file-invalid-type") {
+        setDragError("Solo se permiten archivos de imagen (JPG, PNG, GIF).");
+      } else {
+        setDragError("Archivo no válido.");
+      }
+      return;
     }
-  }
+
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+      setSelectedImage(file);
+
+      // Crear preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".gif", ".webp"],
+    },
+    maxFiles: 1,
+    maxSize: 5 * 1024 * 1024, // 5MB
+    multiple: false,
+  });
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    setDragError("");
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    if (name === "patente") {
+      const upperValue = value.toUpperCase();
+      setFormData((prevData) => ({ ...prevData, [name]: upperValue }));
+    } else {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    setDragError("");
+
+    try {
+      // Validación adicional de patente
+      const patenteRegex = /^[A-Z]{2,3}[0-9]{3}[A-Z]{0,2}$/;
+      if (!patenteRegex.test(formData.patente)) {
+        setError("La patente debe tener el formato ABC123 o AB123CD");
+        setIsLoading(false);
+        return;
+      }
+
+      // Crear FormData para envío multipart/form-data
+      const formDataToSend = new FormData();
+
+      // Agregar campos del auto
+      formDataToSend.append("marca", formData.marca);
+      formDataToSend.append("modelo", formData.modelo);
+      formDataToSend.append("anio", formData.anio);
+      formDataToSend.append("color", formData.color);
+      formDataToSend.append("costo", formData.costo);
+      formDataToSend.append("patente", formData.patente);
+      formDataToSend.append(
+        "periodicidadMantenimineto",
+        formData.periodicidadMantenimineto
+      );
+
+      // Agregar imagen si existe
+      if (selectedImage) {
+        formDataToSend.append("imagen", selectedImage);
+      }
+
+      const response = await createAuto(formDataToSend);
+
+      if (response.success) {
+        // Cerrar modal
+        const modal = document.getElementById(
+          "modal_auto"
+        ) as HTMLDialogElement;
+        if (modal) {
+          modal.close();
+        }
+
+        // Limpiar formulario
+        setFormData({
+          marca: "",
+          modelo: "",
+          anio: "",
+          color: "",
+          costo: "",
+          patente: "",
+          periodicidadMantenimineto: "",
+        });
+
+        // Limpiar imagen
+        setSelectedImage(null);
+        setImagePreview(null);
+
+        // Notificar éxito
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
+    } catch (error: any) {
+      console.error("Error creating auto:", error);
+
+      // Manejo específico de errores
+      if (error.response?.status === 500) {
+        const errorMessage =
+          error.response?.data?.error || error.response?.data?.message;
+
+        if (
+          errorMessage &&
+          errorMessage.includes("UNIQUE constraint failed: Automoviles.patente")
+        ) {
+          setError(
+            `La patente "${formData.patente}" ya existe en el sistema. Por favor, verifique la patente e intente nuevamente.`
+          );
+        } else if (errorMessage && errorMessage.includes("patente")) {
+          setError(
+            "Error con la patente del vehículo. Verifique que el formato sea correcto."
+          );
+        } else {
+          setError(
+            "Error interno del servidor. Por favor, intente nuevamente más tarde."
+          );
+        }
+      } else if (error.response?.status === 400) {
+        setError(
+          "Datos inválidos. Por favor, verifique todos los campos y intente nuevamente."
+        );
+      } else if (
+        error.code === "ECONNABORTED" ||
+        error.code === "NETWORK_ERROR"
+      ) {
+        setError(
+          "Error de conexión. Verifique su conexión a internet e intente nuevamente."
+        );
+      } else {
+        setError("Error al crear el auto. Por favor, intente nuevamente.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openModal = () => {
+    // Limpiar formulario al abrir modal
+    setFormData({
+      marca: "",
+      modelo: "",
+      anio: "",
+      color: "",
+      costo: "",
+      patente: "",
+      periodicidadMantenimineto: "",
+    });
+
+    // Limpiar imagen
+    setSelectedImage(null);
+    setImagePreview(null);
+
+    // Limpiar errores
+    setError("");
+    setDragError("");
+
+    const modal = document.getElementById("modal_auto") as HTMLDialogElement;
+    if (modal) {
+      modal.showModal();
+    }
+  };
 
   return (
     <>
       <button
         className="ml-4 btn btn-neutral btn-circle tooltip transform hover:rotate-180 transition-transform duration-300"
-        datatype="Agregar cliente"
-        title="Agregar cliente"
-        onClick={() => document.getElementById("modal_cliente").showModal()}
+        data-tip="Agregar auto"
+        title="Agregar auto"
+        onClick={openModal}
       >
         <Plus />
       </button>
-      <dialog id="modal_cliente" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Agregar auto</h3>
+      <dialog id="modal_auto" className="modal">
+        <div className="modal-box max-w-2xl">
+          <h3 className="font-bold text-lg mb-4">Agregar Nuevo Auto</h3>
 
-          <form className="py-4">
-            <div className="form-control w-full mb-4">
-              <label className="label">
-                <span className="label-text">Nombre</span>
-              </label>
-              <input
-                type="text"
-                name="marca"
-                value={formData.marca}
-                onChange={handleChange}
-                placeholder="Ingrese la marca"
-                className="input input-bordered w-full"
-              />
+          {error && (
+            <div className="alert alert-error mb-4">
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Marca */}
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-medium">Marca</span>
+                  <span className="label-text-alt text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="marca"
+                  value={formData.marca}
+                  onChange={handleChange}
+                  placeholder="Ej: Toyota, Ford, Chevrolet"
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              {/* Modelo */}
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-medium">Modelo</span>
+                  <span className="label-text-alt text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="modelo"
+                  value={formData.modelo}
+                  onChange={handleChange}
+                  placeholder="Ej: Corolla, Fiesta, Onix"
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              {/* Año */}
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-medium">Año</span>
+                  <span className="label-text-alt text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  name="anio"
+                  value={formData.anio}
+                  onChange={handleChange}
+                  placeholder="2024"
+                  min="1980"
+                  max={new Date().getFullYear() + 1}
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              {/* Color */}
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-medium">Color</span>
+                  <span className="label-text-alt text-red-500">*</span>
+                </label>
+                <select
+                  name="color"
+                  value={formData.color}
+                  onChange={handleChange}
+                  className="select select-bordered w-full"
+                  required
+                >
+                  <option value="">Seleccionar color</option>
+                  <option value="Blanco">Blanco</option>
+                  <option value="Negro">Negro</option>
+                  <option value="Gris">Gris</option>
+                  <option value="Plata">Plata</option>
+                  <option value="Rojo">Rojo</option>
+                  <option value="Azul">Azul</option>
+                  <option value="Verde">Verde</option>
+                  <option value="Amarillo">Amarillo</option>
+                  <option value="Naranja">Naranja</option>
+                  <option value="Marrón">Marrón</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+
+              {/* Costo */}
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-medium">Costo (ARS)</span>
+                  <span className="label-text-alt text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  name="costo"
+                  value={formData.costo}
+                  onChange={handleChange}
+                  placeholder="5000000"
+                  min="0"
+                  step="0.01"
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              {/* Patente */}
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-medium">Patente</span>
+                  <span className="label-text-alt text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="patente"
+                  value={formData.patente}
+                  onChange={handleChange}
+                  placeholder="ABC123 o AB123CD"
+                  className="input input-bordered w-full"
+                  pattern="[A-Z]{2,3}[0-9]{3}[A-Z]{0,2}"
+                  title="Formato: ABC123 o AB123CD"
+                  style={{ textTransform: "uppercase" }}
+                  required
+                />
+              </div>
             </div>
 
-            <div className="form-control w-full mb-4">
+            {/* Periodicidad de Mantenimiento */}
+            <div className="form-control w-full mt-4">
               <label className="label">
-                <span className="label-text">Modelo</span>
+                <span className="label-text font-medium">
+                  Periodicidad de Mantenimiento (días)
+                </span>
+                <span className="label-text-alt text-red-500">*</span>
               </label>
-              <input
-                type="text"
-                name="modelo"
-                value={formData.modelo}
+              <select
+                name="periodicidadMantenimineto"
+                value={formData.periodicidadMantenimineto}
                 onChange={handleChange}
-                placeholder="Ingrese el modelo"
-                className="input input-bordered w-full"
-              />
+                className="select select-bordered w-full"
+                required
+              >
+                <option value="">Seleccionar periodicidad</option>
+                <option value="30">30 días (mensual)</option>
+                <option value="60">60 días (bimensual)</option>
+                <option value="90">90 días (trimestral)</option>
+                <option value="120">120 días (cuatrimestral)</option>
+                <option value="180">180 días (semestral)</option>
+                <option value="365">365 días (anual)</option>
+              </select>
             </div>
 
-            <div className="form-control w-full mb-4">
+            {/* Imagen del Auto */}
+            <div className="form-control w-full mt-4">
               <label className="label">
-                <span className="label-text">Fecha de fabricación</span>
+                <span className="label-text font-medium">Imagen del Auto</span>
+                <span className="label-text-alt text-gray-500">Opcional</span>
               </label>
-              <input
-                type="text"
-                name="anio"
-                value={formData.anio}
-                onChange={handleChange}
-                placeholder="Ingrese el año"
-                className="input input-bordered w-full"
-              />
+
+              {imagePreview ? (
+                // Preview de imagen seleccionada
+                <div className="relative">
+                  <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200">
+                    <img
+                      src={imagePreview}
+                      alt="Preview del auto"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute top-2 right-2 btn btn-sm btn-circle btn-error"
+                    title="Eliminar imagen"
+                  >
+                    <X size={16} />
+                  </button>
+                  <div className="mt-2 text-sm text-gray-600">
+                    <span className="font-medium">{selectedImage?.name}</span>
+                    <span className="ml-2">
+                      ({Math.round((selectedImage?.size || 0) / 1024)} KB)
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                // Dropzone
+                <div
+                  {...getRootProps()}
+                  className={`
+                    w-full h-32 border-2 border-dashed rounded-lg cursor-pointer
+                    transition-all duration-200 flex flex-col items-center justify-center
+                    ${
+                      isDragActive
+                        ? "border-primary bg-primary/10"
+                        : "border-gray-300 hover:border-gray-400 bg-gray-50"
+                    }
+                  `}
+                >
+                  <input {...getInputProps()} />
+                  <Upload className="w-8 h-8 mb-2 text-gray-400" />
+                  <p className="text-sm text-gray-600 text-center px-2">
+                    {isDragActive ? (
+                      "Suelta la imagen aquí"
+                    ) : (
+                      <>
+                        <span className="font-medium">
+                          Haz clic para seleccionar
+                        </span>
+                        <span className="block">
+                          o arrastra una imagen aquí
+                        </span>
+                      </>
+                    )}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    JPG, PNG, GIF hasta 5MB
+                  </p>
+                </div>
+              )}
+
+              {dragError && (
+                <div className="alert alert-error mt-2">
+                  <span className="text-sm">{dragError}</span>
+                </div>
+              )}
             </div>
 
-            <div className="form-control w-full mb-4">
-              <label className="label">
-                <span className="label-text">Color</span>
-              </label>
-              <input
-                type="text"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-                placeholder="Ingrese el color"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            <div className="form-control w-full mb-4">
-              <label className="label">
-                <span className="label-text">Patente</span>
-              </label>
-              <input
-                type="text"
-                name="patente"
-                value={formData.patente}
-                onChange={handleChange}
-                placeholder="Ingrese el Patente"
-                className="input input-bordered w-full"
-              />
+            <div className="modal-action mt-6">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <Save /> Guardar Auto
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                className="btn"
+                disabled={isLoading}
+                onClick={() => {
+                  const modal = document.getElementById(
+                    "modal_auto"
+                  ) as HTMLDialogElement;
+                  if (modal) modal.close();
+                }}
+              >
+                Cerrar
+              </button>
             </div>
           </form>
-
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn btn-primary mr-2" onClick={handleSubmit}><Save /> Guardar</button>
-              <button className="btn">Cerrar</button>
-            </form>
-          </div>
         </div>
       </dialog>
     </>
