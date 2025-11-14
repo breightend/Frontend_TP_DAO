@@ -206,7 +206,10 @@ export default function CreateClient() {
         className="ml-4 btn btn-neutral btn-circle tooltip transform hover:rotate-180 transition-transform duration-300"
         data-tip="Agregar cliente"
         title="Agregar cliente"
-        onClick={openModal}
+        onClick={() => {
+          const modal = document.getElementById("modal_cliente") as HTMLDialogElement | null;
+          modal?.showModal();
+        }}
       >
         <Plus />
       </button>

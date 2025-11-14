@@ -1,14 +1,15 @@
 import { getClients } from "../../services/clientService";
+import type { Client } from "../../services/clientService.d";
 import { useEffect, useState } from "react";
 import EditClient from "../Modals/EditClient";
 import SpecificClient from "../Modals/SpecificClient";
-import { Search, Trash2, Eye } from "lucide-react";
+import { Search } from "lucide-react";
 
 export default function ClientsInfo() {
-  const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredClients] = useState([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
   const [showClientModal, setShowClientModal] = useState(false);
 
@@ -37,7 +38,7 @@ export default function ClientsInfo() {
       return;
     }
 
-    const filtered = clients.filter((client: any) => {
+    const filtered = clients.filter((client: Client) => {
       const searchLower = term.toLowerCase();
       return (
         client.nombre?.toLowerCase().includes(searchLower) ||
@@ -120,7 +121,7 @@ export default function ClientsInfo() {
           </thead>
           <tbody>
             {filteredClients && filteredClients.length > 0 ? (
-              filteredClients.map((client: any, index: number) => (
+              filteredClients.map((client: Client, index: number) => (
                 <tr
                   key={client.id}
                   className="hover:bg-base-200 cursor-pointer transition-colors"
