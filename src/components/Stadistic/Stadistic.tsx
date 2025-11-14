@@ -152,6 +152,15 @@ const formatDate = (value: string) => {
   });
 };
 
+const formatPeriodo = (periodo: string) => {
+  const match = periodo.match(/^(\d{4})-Q(\d)$/);
+  if (match) {
+    const [, year, quarter] = match;
+    return `${year} - Trimestre ${quarter}`;
+  }
+  return periodo;
+};
+
 interface MetricCardProps {
   icon: LucideIcon;
   title: string;
@@ -593,12 +602,6 @@ export default function Stadistic() {
             helper: filters.incluirSanciones ? "Incluyendo sanciones" : "No incluidas",
           },
           {
-            icon: BarChart3,
-            title: "Descuentos",
-            value: formatCurrency(facturacionData.acumulado.total_descuentos),
-            helper: "Datos registrados en el período",
-          },
-          {
             icon: Users,
             title: "Total general",
             value: formatCurrency(facturacionData.acumulado.total_general),
@@ -796,7 +799,7 @@ export default function Stadistic() {
                       <tbody>
                         {alquileresPeriodo.map((item) => (
                           <tr key={item.periodo}>
-                            <td className="font-mono text-sm">{item.periodo}</td>
+                            <td className="font-mono text-sm">{formatPeriodo(item.periodo)}</td>
                             <td className="text-right">{formatNumber(item.cantidad_alquileres)}</td>
                             <td className="text-right">{formatCurrency(item.total_alquileres)}</td>
                           </tr>
@@ -984,7 +987,7 @@ export default function Stadistic() {
         const title = `Alquileres agrupados por ${filters.periodicidad === "mes" ? "mes" : "trimestre"}`;
         const columns = ["Período", "Cantidad", "Total alquileres"];
         const rows = alquileresPeriodo.map((registro) => [
-          registro.periodo,
+          formatPeriodo(registro.periodo),
           formatNumber(registro.cantidad_alquileres),
           formatCurrency(registro.total_alquileres),
         ]);
@@ -1016,12 +1019,11 @@ export default function Stadistic() {
       case "facturacion":
       default: {
         const title = "Estadística de facturación mensual";
-        const columns = ["Período", "Alquileres", "Sanciones", "Descuentos", "Total"];
+        const columns = ["Período", "Alquileres", "Sanciones", "Total"];
         const rows = facturacionData.periodos.map((periodo) => [
           periodo.periodo,
           formatCurrency(periodo.total_alquileres),
           formatCurrency(periodo.total_sanciones),
-          formatCurrency(periodo.total_descuentos ?? 0),
           formatCurrency(periodo.total_general),
         ]);
 
@@ -1030,7 +1032,6 @@ export default function Stadistic() {
             "Acumulado",
             formatCurrency(facturacionData.acumulado.total_alquileres),
             formatCurrency(facturacionData.acumulado.total_sanciones),
-            formatCurrency(facturacionData.acumulado.total_descuentos),
             formatCurrency(facturacionData.acumulado.total_general),
           ]);
         }

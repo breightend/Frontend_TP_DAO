@@ -163,7 +163,7 @@ export default function CreateRental() {
           >
             <option value="">Seleccione un cliente</option>
             {client?.map((client: Client) => (
-                <option key={client.id} value={client.id}>
+                <option key={client.dni} value={client.dni}>
                   {client.nombre} {client.apellido}
                 </option>
               ))}
@@ -223,7 +223,7 @@ export default function CreateRental() {
           >
             <option value="">Seleccione un auto</option>
             {car?.map((carItem) => (
-                <option key={carItem.id} value={carItem.id}>
+                <option key={carItem.patente} value={carItem.patente}>
                   {carItem.marca} {carItem.modelo} {carItem.patente}
                 </option>
               ))}
@@ -244,7 +244,7 @@ export default function CreateRental() {
           >
             <option value="">Seleccione un empleado</option>
             {employee?.map((employeeItem) => (
-                <option key={employeeItem.id} value={employeeItem.id}>
+                <option key={employeeItem.legajo} value={employeeItem.legajo}>
                   {employeeItem.legajo} {employeeItem.nombre} {employeeItem.apellido}
                 </option>
               ))}

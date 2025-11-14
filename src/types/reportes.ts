@@ -62,14 +62,12 @@ export interface FacturacionPeriodo {
   periodo: string;
   total_alquileres: number;
   total_sanciones: number;
-  total_descuentos: number;
   total_general: number;
 }
 
 export interface FacturacionAcumulado {
   total_alquileres: number;
   total_sanciones: number;
-  total_descuentos: number;
   total_general: number;
 }
 

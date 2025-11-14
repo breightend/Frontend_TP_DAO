@@ -217,28 +217,24 @@ const facturacionPeriodos: FacturacionPeriodo[] = [
     periodo: "2024-07",
     total_alquileres: 920000,
     total_sanciones: 40000,
-    total_descuentos: 0,
     total_general: 960000,
   },
   {
     periodo: "2024-08",
     total_alquileres: 1320000,
     total_sanciones: 55000,
-    total_descuentos: 0,
     total_general: 1375000,
   },
   {
     periodo: "2024-09",
     total_alquileres: 1740000,
     total_sanciones: 70000,
-    total_descuentos: 0,
     total_general: 1810000,
   },
   {
     periodo: "2024-10",
     total_alquileres: 1560000,
     total_sanciones: 85000,
-    total_descuentos: 0,
     total_general: 1645000,
   },
 ];
@@ -249,13 +245,11 @@ export const mockFacturacionData: FacturacionData = {
     (acc, periodo) => ({
       total_alquileres: acc.total_alquileres + periodo.total_alquileres,
       total_sanciones: acc.total_sanciones + periodo.total_sanciones,
-      total_descuentos: acc.total_descuentos + periodo.total_descuentos,
       total_general: acc.total_general + periodo.total_general,
     }),
     {
       total_alquileres: 0,
       total_sanciones: 0,
-      total_descuentos: 0,
       total_general: 0,
     }
   ),
