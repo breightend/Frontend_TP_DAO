@@ -22,7 +22,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import AutosStadistics from "./AutosStadistics";
 import VentasStadistics from "./VentasStadistics";
 import {
@@ -1057,41 +1058,132 @@ export default function Stadistic() {
 
     try {
       const doc = new jsPDF({ unit: "pt", format: "a4" });
-      const margin = 48;
-      const maxWidth = doc.internal.pageSize.getWidth() - margin * 2;
-      const lineHeight = 16;
-      let y = margin;
-
-      const addText = (text: string, options?: { size?: number; bold?: boolean }) => {
-        const size = options?.size ?? 11;
-        const fontStyle = options?.bold ? "bold" : "normal";
-        doc.setFont("helvetica", fontStyle);
-        doc.setFontSize(size);
-        const lines = doc.splitTextToSize(text, maxWidth);
-        lines.forEach((line: string) => {
-          if (y > doc.internal.pageSize.getHeight() - margin) {
-            doc.addPage();
-            y = margin;
-          }
-          doc.text(line, margin, y);
-          y += lineHeight;
-        });
-      };
-
-      addText(exportData.title, { size: 18, bold: true });
-      addText(
-        `Generado: ${new Date().toLocaleString("es-AR", {
-          dateStyle: "medium",
-          timeStyle: "short",
-        })}`
-      );
-      addText(exportData.subtitle);
-      y += 8;
-      addText(exportData.columns.join(" | "), { bold: true });
-
-      exportData.rows.forEach((row) => {
-        addText(row.join(" | "));
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      
+      // Colors
+      const primaryColor = [67, 56, 202]; // Indigo-700
+      const secondaryColor = [14, 165, 233]; // Sky-500
+      const accentColor = [34, 197, 94]; // Green-500
+      const textColor = [31, 41, 55]; // Gray-800
+      const lightGray = [243, 244, 246]; // Gray-100
+      
+      // Header with gradient effect
+      doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+      doc.rect(0, 0, pageWidth, 120, "F");
+      
+      // Company logo area (decorative circle)
+      doc.setFillColor(255, 255, 255);
+      doc.circle(40, 40, 20, "F");
+      doc.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+      doc.circle(40, 40, 15, "F");
+      
+      // Title
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(24);
+      doc.text(exportData.title, 40, 90);
+      
+      // Subtitle bar
+      doc.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+      doc.rect(0, 120, pageWidth, 60, "F");
+      
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      const generatedDate = new Date().toLocaleString("es-AR", {
+        dateStyle: "long",
+        timeStyle: "short",
       });
+      doc.text(`Generado: ${generatedDate}`, 40, 145);
+      doc.text(exportData.subtitle, 40, 165);
+      
+      // Decorative line
+      doc.setDrawColor(accentColor[0], accentColor[1], accentColor[2]);
+      doc.setLineWidth(3);
+      doc.line(40, 190, pageWidth - 40, 190);
+      
+      // Table with autoTable
+      autoTable(doc, {
+        startY: 210,
+        head: [exportData.columns],
+        body: exportData.rows,
+        theme: "grid",
+        headStyles: {
+          fillColor: primaryColor,
+          textColor: [255, 255, 255],
+          fontSize: 11,
+          fontStyle: "bold",
+          halign: "center",
+          cellPadding: 8,
+        },
+        bodyStyles: {
+          fontSize: 10,
+          cellPadding: 6,
+          textColor: textColor,
+        },
+        alternateRowStyles: {
+          fillColor: lightGray,
+        },
+        columnStyles: {
+          0: { fontStyle: "bold" },
+        },
+        styles: {
+          lineColor: [209, 213, 219],
+          lineWidth: 0.5,
+        },
+        margin: { left: 40, right: 40 },
+        didDrawPage: () => {
+          // Footer
+          const footerY = pageHeight - 30;
+          doc.setFontSize(9);
+          doc.setTextColor(107, 114, 128);
+          doc.setFont("helvetica", "normal");
+          
+          // Page number
+          const pageNum = `Página ${doc.getCurrentPageInfo().pageNumber}`;
+          doc.text(pageNum, pageWidth - 40, footerY, { align: "right" });
+          
+          // Company name or watermark
+          doc.text("Sistema de Gestión de Alquileres", 40, footerY);
+          
+          // Decorative footer line
+          doc.setDrawColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+          doc.setLineWidth(1);
+          doc.line(40, footerY - 10, pageWidth - 40, footerY - 10);
+        },
+      });
+      
+      // Add summary statistics if available
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const finalY = (doc as any).lastAutoTable.finalY || 210;
+      
+      if (selectedReport === "facturacion" && facturacionData.acumulado) {
+        const summaryY = finalY + 30;
+        
+        // Summary box
+        doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
+        doc.roundedRect(40, summaryY, pageWidth - 80, 80, 5, 5, "F");
+        
+        doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
+        doc.rect(40, summaryY, 5, 80, "F");
+        
+        doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.text("Resumen Total", 55, summaryY + 25);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        const summary = [
+          `Alquileres: ${formatCurrency(facturacionData.acumulado.total_alquileres)}`,
+          `Sanciones: ${formatCurrency(facturacionData.acumulado.total_sanciones)}`,
+          `Total General: ${formatCurrency(facturacionData.acumulado.total_general)}`,
+        ];
+        
+        summary.forEach((line, index) => {
+          doc.text(line, 55, summaryY + 45 + index * 15);
+        });
+      }
 
       doc.save(buildFileName(exportData.prefix, "pdf"));
     } catch (error) {
