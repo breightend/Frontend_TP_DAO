@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/autos";
+const API_URL = "http://localhost:3000/api/seguros";
 
 export const getInsurances = async () => {
   const response = await axios.get(`${API_URL}/seguros`);
@@ -18,7 +18,7 @@ export const createInsurance = async (insuranceData) => {
     config.headers["Content-Type"] = "application/json";
   }
   const response = await axios.post(
-    `${API_URL}/seguros`,
+    `${API_URL}/createSeguro`,
     insuranceData,
     config
   );
