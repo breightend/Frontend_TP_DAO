@@ -11,6 +11,7 @@ export default function Seguros() {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getInsurances();
+      console.log("Seguros", data)
       setSeguros(data);
     };
     fetchData();
@@ -47,9 +48,9 @@ export default function Seguros() {
             seguros.map((seguro: any, index: number) => (
               <tr key={index}>
                 <td>{seguro.poliza}</td>
-                <td>{seguro.compania}</td>
-                <td>{seguro.vencimiento}</td>
-                <td>{seguro.tipoPoliza}</td>
+                <td>{seguro.compañia}</td>
+                <td>{seguro.fechaVencimiento}</td>
+                <td>{seguro.tipoPoliza.descripcion}</td>
                 <td>{seguro.descripcion}</td>
                 <td>{seguro.costo}</td>
               </tr>

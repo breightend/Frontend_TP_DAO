@@ -3,9 +3,15 @@ import axios from "axios";
 const API_URL = "http://localhost:3000/api/seguros";
 
 export const getInsurances = async () => {
-  const response = await axios.get(`${API_URL}/seguros`);
+  const response = await axios.get(`${API_URL}`);
   return response.data;
 };
+
+export const getInsurancesTypes = async () => {
+  const response = await axios.get(`${API_URL}/tipoSeguros`);
+  return response.data;
+};
+
 export const createInsurance = async (insuranceData) => {
   const isFormData = insuranceData instanceof FormData;
   const config = {

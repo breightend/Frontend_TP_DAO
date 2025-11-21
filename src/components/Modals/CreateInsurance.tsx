@@ -1,14 +1,17 @@
-import { ShieldPlus } from "lucide-react";
-import { useState } from "react";
-import { createInsurance } from "../../services/insuranceService";
+import { ShieldPlus } from "lucide-react"
+import { useState, useEffect } from "react"
+import {
+  createInsurance,
+  getInsurancesTypes,
+} from "../../services/insuranceService"
 
 interface FormErrors {
-  poliza?: string;
-  compañia?: string;
-  fechaVencimiento?: string;
-  tipoPoliza?: string;
-  descripcion?: string;
-  costo?: string;
+  poliza?: string
+  compañia?: string
+  fechaVencimiento?: string
+  tipoPoliza?: string
+  descripcion?: string
+  costo?: string
 }
 
 export default function CreateInsurance() {
@@ -19,25 +22,26 @@ export default function CreateInsurance() {
     tipoPoliza: "",
     descripcion: "",
     costo: "",
-  });
+  })
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [isLoading, setIsLoading] = useState(false)
+  const [tiposSeguro, setTiposSeguro] = useState([])
 
   const clearError = (fieldName: keyof FormErrors) => {
     if (errors[fieldName]) {
       setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[fieldName];
-        return newErrors;
-      });
+        const newErrors = { ...prev }
+        delete newErrors[fieldName]
+        return newErrors
+      })
     }
-  };
+  }
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
 
     // Lógica para permitir SOLO NÚMEROS en Poliza y Costo
     if (name === "poliza" || name === "costo") {
@@ -46,89 +50,88 @@ export default function CreateInsurance() {
         setFormData((prev) => ({
           ...prev,
           [name]: value,
-        }));
+        }))
       }
     } else {
       // Para el resto de campos (texto, fecha, etc.)
       setFormData((prev) => ({
         ...prev,
         [name]: value,
-      }));
+      }))
     }
 
-    clearError(name as keyof FormErrors);
-  };
+    clearError(name as keyof FormErrors)
+  }
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+    const newErrors: FormErrors = {}
 
     // 1. Validar Poliza (Solo números ya garantizado por handleChange, validamos longitud)
     if (!formData.poliza.trim()) {
-      newErrors.poliza = "La poliza es obligatoria";
+      newErrors.poliza = "La poliza es obligatoria"
     }
 
     // 2. Validar Compañia
     if (!formData.compañia.trim()) {
-      newErrors.compañia = "La compañia es obligatoria";
+      newErrors.compañia = "La compañia es obligatoria"
     } else if (formData.compañia.trim().length < 2) {
-      newErrors.compañia = "El nombre de la compañia es muy corto";
+      newErrors.compañia = "El nombre de la compañia es muy corto"
     }
 
     // 3. Validar Fecha de Vencimiento (POSTERIOR A HOY)
     if (!formData.fechaVencimiento) {
-      newErrors.fechaVencimiento = "La fecha de vencimiento es obligatoria";
+      newErrors.fechaVencimiento = "La fecha de vencimiento es obligatoria"
     } else {
-      const inputDate = new Date(formData.fechaVencimiento);
+      const inputDate = new Date(formData.fechaVencimiento)
       // Crear fecha de hoy y resetear horas para comparar solo días
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
 
       // Ajustamos la fecha input para compensar zona horaria al comparar (opcional, depende del navegador)
       // Para asegurar comparación estricta:
-      const inputDateMidnight = new Date(inputDate);
-      inputDateMidnight.setHours(24, 0, 0, 0); // Forzamos al final del día seleccionado o manejo UTC
+      const inputDateMidnight = new Date(inputDate)
+      inputDateMidnight.setHours(24, 0, 0, 0) // Forzamos al final del día seleccionado o manejo UTC
 
       if (inputDate <= today) {
-        newErrors.fechaVencimiento =
-          "La fecha debe ser posterior al día de hoy";
+        newErrors.fechaVencimiento = "La fecha debe ser posterior al día de hoy"
       }
     }
 
     // 4. Validar Tipo Poliza
     if (!formData.tipoPoliza.trim()) {
-      newErrors.tipoPoliza = "El tipo del seguro es obligatorio";
+      newErrors.tipoPoliza = "El tipo del seguro es obligatorio"
     }
 
     // 5. Validar Descripcion
     if (!formData.descripcion.trim()) {
-      newErrors.descripcion = "La descripción es obligatoria";
+      newErrors.descripcion = "La descripción es obligatoria"
     }
 
     // 6. Validar Costo
     if (!formData.costo.trim()) {
-      newErrors.costo = "El costo es obligatorio";
+      newErrors.costo = "El costo es obligatorio"
     }
 
-    setErrors(newErrors);
+    setErrors(newErrors)
     // Retorna true si no hay errores (longitud de keys es 0)
-    return Object.keys(newErrors).length === 0;
-  };
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     // Validamos antes de enviar
     if (!validateForm()) {
-      console.warn("Formulario inválido", errors);
-      return;
+      console.warn("Formulario inválido", errors)
+      return
     }
 
-    setIsLoading(true);
-    setErrors({});
+    setIsLoading(true)
+    setErrors({})
 
     try {
       // --- AQUÍ MOSTRAMOS LOS DATOS POR CONSOLA COMO PEDISTE ---
-      console.log("Form data:", formData);
+      console.log("Form data:", formData)
 
       // Simulamos una petición asíncrona (espera 1 seg)
       const response = await createInsurance(formData)
@@ -140,24 +143,31 @@ export default function CreateInsurance() {
         tipoPoliza: "",
         descripcion: "",
         costo: "",
-      });
+      })
 
       // Cerrar modal
       const modal = document.getElementById(
-        "modal_insurance",
-      ) as HTMLDialogElement;
+        "modal_insurance"
+      ) as HTMLDialogElement
       if (modal) {
-        modal.close();
+        modal.close()
       }
     } catch (error: any) {
-      console.error("Error:", error);
+      console.error("Error:", error)
       setErrors({
         poliza: "Ocurrió un error inesperado.",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
+
+  useEffect(() => {
+    getInsurancesTypes().then((data) => {
+      console.log("datos", data)
+      setTiposSeguro(data)
+    })
+  }, [])
 
   return (
     <div className="p-4">
@@ -166,9 +176,9 @@ export default function CreateInsurance() {
         title="Crear Seguro"
         onClick={() => {
           const modal = document.getElementById(
-            "modal_insurance",
-          ) as HTMLDialogElement;
-          modal.showModal();
+            "modal_insurance"
+          ) as HTMLDialogElement
+          modal.showModal()
         }}
       >
         <ShieldPlus />
@@ -246,10 +256,21 @@ export default function CreateInsurance() {
                       errors.tipoPoliza ? "select-error border-red-500" : ""
                     }`}
                   >
-                    <option value="">Seleccione un tipo...</option>
-                    <option value="1">Cobertura Total</option>
-                    <option value="2">Terceros Completo</option>
-                    <option value="3">Responsabilidad Civil</option>
+                    {/* Agrega esta opción inicial para evitar problemas con valor inicial vacío */}
+                    <option value="" disabled>
+                      Seleccione un Tipo de Póliza
+                    </option>
+
+                    {/* APLICACIÓN DEL MAPEO CORREGIDO */}
+                    {tiposSeguro.map((tipoSeguro: any) => (
+                      <option
+                        key={tipoSeguro.id_tipo_seguro} // Usamos la ID correcta de tu objeto
+                        value={tipoSeguro.id_tipo_seguro} // Usamos la ID correcta como valor
+                      >
+                        {tipoSeguro.descripcion}{" "}
+                        {/* 👈 MUESTRA SOLO LA PROPIEDAD DE TEXTO */}
+                      </option>
+                    ))}
                   </select>
 
                   {errors.tipoPoliza && (
@@ -361,9 +382,9 @@ export default function CreateInsurance() {
                   className="btn"
                   onClick={() => {
                     const modal = document.getElementById(
-                      "modal_insurance",
-                    ) as HTMLDialogElement;
-                    if (modal) modal.close();
+                      "modal_insurance"
+                    ) as HTMLDialogElement
+                    if (modal) modal.close()
                   }}
                 >
                   Cerrar
@@ -378,5 +399,5 @@ export default function CreateInsurance() {
         </dialog>
       </div>
     </div>
-  );
+  )
 }
