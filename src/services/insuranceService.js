@@ -26,7 +26,14 @@ export const createInsurance = async (insuranceData) => {
   const response = await axios.post(
     `${API_URL}/createSeguro`,
     insuranceData,
-    config
+    config,
   );
+  return response.data;
+};
+
+export const createInsuranceType = async (description) => {
+  const response = await axios.post(`${API_URL}/createTipoSeguro`, {
+    descripcion: description,
+  });
   return response.data;
 };

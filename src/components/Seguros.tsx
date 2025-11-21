@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { getInsurances } from "../services/insuranceService";
 import CreateInsurance from "./Modals/CreateInsurance";
+import CreateInsuranceType from "./Modals/CreateInsuranceType";
 
 export default function Seguros() {
   const [location, setLocation] = useLocation();
@@ -29,8 +30,11 @@ export default function Seguros() {
         </button>
         <h1 className="text-3xl font-semibold ml-4">Seguros</h1>
       </p>
-      <div className="p-4">
+      <div className="p-2 flex gap-2">
         <CreateInsurance />
+        <CreateInsuranceType />
+      </div>
+      <div className="p-4">
       </div>
       <table className="table">
         <thead>
