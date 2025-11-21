@@ -4,80 +4,115 @@ import { Edit } from "lucide-react";
 
 interface EditClientProps {
   client?: {
-    id: number;
     nombre: string;
     apellido: string;
-    dni: string;
+    dni: number;
     email: string;
-    telefono: string;
+    telefono: number;
+    direccion: string;
     fechaNacimiento: string;
   };
   onSuccess?: () => void;
 }
 
+interface FormErrors {
+  nombre?: string;
+  apellido?: string;
+  DNI?: string;
+  email?: string;
+  telefono?: string;
+  fechaNacimiento?: string;
+  direccion?: string;
+}
+
 export default function EditClient({ client, onSuccess }: EditClientProps) {
   const [formData, setFormData] = useState({
-    nombre: client?.nombre || "",
-    apellido: client?.apellido || "",
-    dni: client?.dni || "",
+    dni: client?.dni as number,
     email: client?.email || "",
-    telefono: client?.telefono || "",
-    fechaNacimiento: client?.fechaNacimiento || "",
+    telefono: client?.telefono || 0,
+    direccion: client?.direccion || ""
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     if (client) {
       setFormData({
-        nombre: client.nombre || "",
-        apellido: client.apellido || "",
-        dni: client.dni || "",
+        dni: client.dni as number,
         email: client.email || "",
-        telefono: client.telefono || "",
-        fechaNacimiento: client.fechaNacimiento || "",
+        telefono: client.telefono || 0,
+        direccion: client.direccion || "",
       });
     }
   }, [client]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const clearError = (fieldName: keyof FormErrors) => {
+    if (errors[fieldName]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    // Limpiar error del campo cuando el usuario empiece a escribir
+    clearError(name as keyof FormErrors);
+
+    if (name === "telefono") {
+      const numbersOnly = value.replace(/\D/g, "");
+      const limitedValue = numbersOnly.slice(0, 14);
+      setFormData((prevData) => ({ ...prevData, [name]: limitedValue as unknown as number }));
+    } 
+    else {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!client?.id) {
-      setError("No se puede editar el cliente: ID no encontrado");
+    if (!client) {
       return;
+    }else{
+      setIsLoading(true);
+      setErrors({});
+    
+      try {
+          await updateClient(client?.dni as number, formData);
+
+          client.email = formData.email;
+          client.telefono = formData.telefono;
+          client.direccion = formData.direccion;
+
+          const modal = document.getElementById(
+            "modal_editar_cliente"
+          ) as HTMLDialogElement;
+          if (modal) {
+            modal.close();
+          }
+    
+          if (onSuccess) {
+            onSuccess();
+          }
+        } catch (error) {
+          console.error("Error updating client:", error);
+          setErrors({
+            email: "Error al actualizar el cliente. Por favor, intente nuevamente."
+          });
+        } finally {
+          setIsLoading(false);
+        }
     }
 
-    setIsLoading(true);
-    setError("");
 
-    try {
-      await updateClient(client.id, formData);
-
-      const modal = document.getElementById(
-        "modal_editar_cliente"
-      ) as HTMLDialogElement;
-      if (modal) {
-        modal.close();
-      }
-
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (error) {
-      console.error("Error updating client:", error);
-      setError(
-        "Error al actualizar el cliente. Por favor, intente nuevamente."
-      );
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const openModal = () => {
@@ -92,67 +127,43 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
   return (
     <>
       <button
-        className="btn btn-neutral btn-circle tooltip"
-        data-tip="Editar cliente"
-        title="Editar cliente"
+        className="btn btn-primary"
         onClick={openModal}
+        disabled={isLoading}
       >
-        <Edit />
+      <Edit size={16} />
+        Editar Cliente
       </button>
       <dialog id="modal_editar_cliente" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Editar Cliente</h3>
-
-          {error && (
-            <div className="alert alert-error mb-4">
-              <span>{error}</span>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="py-4">
             <div className="form-control w-full mb-4">
               <label className="label">
                 <span className="label-text">Nombre</span>
               </label>
-              <input
-                type="text"
-                name="nombre"
-                value={formData.nombre}
-                onChange={handleChange}
-                placeholder="Ingrese el nombre"
-                className="input input-bordered w-full"
-                required
-              />
+              <p className="py-2 px-4 border rounded-md bg-gray-100 text-gray-700">
+                {client?.nombre}
+              </p>
             </div>
 
             <div className="form-control w-full mb-4">
               <label className="label">
                 <span className="label-text">Apellido</span>
               </label>
-              <input
-                type="text"
-                name="apellido"
-                value={formData.apellido}
-                onChange={handleChange}
-                placeholder="Ingrese el apellido"
-                className="input input-bordered w-full"
-                required
-              />
+              <p className="py-2 px-4 border rounded-md bg-gray-100 text-gray-700">
+                {client?.apellido}
+              </p>
             </div>
 
             <div className="form-control w-full mb-4">
               <label className="label">
                 <span className="label-text">DNI</span>
               </label>
-              <input
-                type="text"
-                name="dni"
-                value={formData.dni}
-                onChange={handleChange}
-                placeholder="Ingrese el DNI"
-                className="input input-bordered w-full"
-                required
-              />
+              <p className="py-2 px-4 border rounded-md bg-gray-100 text-gray-700">
+                {client?.dni}
+              </p>
             </div>
 
             <div className="form-control w-full mb-4">
@@ -165,9 +176,10 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="ejemplo@correo.com"
-                className="input input-bordered w-full"
+                className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
                 required
               />
+              {errors.email && <span className="label-text-alt text-red-500">{errors.email}</span>}
             </div>
 
             <div className="form-control w-full mb-4">
@@ -180,23 +192,35 @@ export default function EditClient({ client, onSuccess }: EditClientProps) {
                 value={formData.telefono}
                 onChange={handleChange}
                 placeholder="Ingrese el teléfono"
-                className="input input-bordered w-full"
+                className={`input input-bordered w-full ${errors.telefono ? 'input-error' : ''}`}
                 required
               />
+              {errors.telefono && <span className="label-text-alt text-red-500">{errors.telefono}</span>}
+            </div>
+
+            <div className="form-control w-full mb-4">
+              <label className="label">
+                <span className="label-text">Dirección</span>
+              </label>
+              <input
+                type="text"
+                name="direccion"
+                value={formData.direccion}
+                onChange={handleChange}
+                placeholder="Ingrese la dirección"
+                className={`input input-bordered w-full ${errors.direccion ? 'input-error' : ''}`}
+                required
+              />
+              {errors.direccion && <span className="label-text-alt text-red-500">{errors.direccion}</span>}
             </div>
 
             <div className="form-control w-full mb-4">
               <label className="label">
                 <span className="label-text">Fecha de Nacimiento</span>
               </label>
-              <input
-                type="date"
-                name="fechaNacimiento"
-                value={formData.fechaNacimiento}
-                onChange={handleChange}
-                className="input input-bordered w-full"
-                required
-              />
+              <p className="py-2 px-4 border rounded-md bg-gray-100 text-gray-700">
+                {client?.fechaNacimiento}
+              </p>
             </div>
 
             <div className="modal-action">

@@ -147,11 +147,8 @@ export default function ClientsInfo() {
             )}
           </tbody>
         </table>
-      </div>
-
-      {selectedClient && (
-        <EditClient client={selectedClient} onSuccess={handleEditSuccess} />
-      )}
+      </div>  
+      
       {selectedClient && (
         <SpecificClient
           client={selectedClient}

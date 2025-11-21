@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getClientById, deleteClient } from "../../services/clientService";
+import { deleteClient } from "../../services/clientService";
 import EditClient from "./EditClient";
 import {
   Edit,
@@ -23,10 +23,11 @@ interface Client {
   id: number;
   nombre: string;
   apellido: string;
-  dni: string;
+  dni: number;
   email: string;
-  telefono: string;
+  telefono: number;
   fechaNacimiento: string;
+  direccion: string;
 }
 
 export default function SpecificClient({
@@ -36,34 +37,10 @@ export default function SpecificClient({
   onDelete,
   onEdit,
 }: SpecificClientProps) {
-  //const [client, setClient] = useState<Client | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showEditModal, setShowEditModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    if (clientId && isOpen) {
-      fetchClient();
-    }
-  }, [clientId, isOpen]);
-
-  const fetchClient = async () => {
-    if (!clientId) return;
-
-    setIsLoading(true);
-    setError("");
-
-    try {
-      const clientData = await getClientById(clientId);
-      setClient(clientData);
-    } catch (error) {
-      console.error("Error fetching client:", error);
-      setError("Error al cargar la información del cliente");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleDelete = async () => {
     if (!client?.id) return;
@@ -92,14 +69,9 @@ export default function SpecificClient({
 
   const handleEditSuccess = () => {
     setShowEditModal(false);
-    fetchClient();
     if (onEdit) {
       onEdit();
     }
-  };
-
-  const handleEditModal = () => {
-    setShowEditModal(true);
   };
 
   if (!isOpen) return null;
@@ -207,14 +179,7 @@ export default function SpecificClient({
 
               {/* Action Buttons */}
               <div className="flex justify-end space-x-3 pt-4 border-t border-base-300">
-                <button
-                  className="btn btn-primary"
-                  onClick={handleEditModal}
-                  disabled={isDeleting}
-                >
-                  <Edit size={16} />
-                  Editar Cliente
-                </button>
+                  <EditClient client={client} onSuccess={handleEditSuccess} />
                 <button
                   className="btn btn-error"
                   onClick={handleDelete}
@@ -238,9 +203,6 @@ export default function SpecificClient({
         </form>
       </dialog>
 
-      {showEditModal && client && (
-        <EditClient client={client} onSuccess={handleEditSuccess} />
-      )}
     </>
   );
 }
