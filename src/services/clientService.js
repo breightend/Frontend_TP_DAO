@@ -13,7 +13,7 @@ export const createClient = async (clientData) => {
 };
 
 export const updateClient = async (id, clientData) => {
-  const response = await axios.put(`${API_URL}/${id}`, clientData);
+  const response = await axios.put(`${API_URL}/editClient`, clientData);
   return response.data;
 };
 
@@ -27,8 +27,8 @@ export const getAvailableClients = async () => {
   return response.data;
 }
 
-export const getClientById = async (id) => {
-    const response = await axios.get(`${API_URL}/${id}`);
+export const getClientByDni = async (dni) => {
+    const response = await axios.get(`${API_URL}/specific?dni=${dni}`);
     return response.data;
 }
 
