@@ -159,14 +159,14 @@ const CarsInfo = forwardRef<CarsInfoRef>((_props, ref) => {
                   <td className="font-mono font-semibold">{auto.patente}</td>
                   <td>{auto.marca}</td>
                   <td>{auto.modelo}</td>
-                  <td>{auto.año}</td>
+                  <td>{auto.anio}</td>
                   <td>
                     <span className="badge badge-outline badge-sm">
                       {auto.color}
                     </span>
                   </td>
                   <td className="font-semibold">
-                    ${auto.precio?.toLocaleString("es-AR") || "N/A"}
+                    ${auto.costo?.toLocaleString("es-AR") || "N/A"}
                   </td>
                 </tr>
               ))

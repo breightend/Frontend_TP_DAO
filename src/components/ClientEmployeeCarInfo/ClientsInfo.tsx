@@ -10,7 +10,7 @@ export default function ClientsInfo() {
   const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-  const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
+  //const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
   const [showClientModal, setShowClientModal] = useState(false);
 
   useEffect(() => {
@@ -56,25 +56,24 @@ export default function ClientsInfo() {
   };
 
   const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = event.target.value;
     setSearchTerm(value);
     filterClients(value);
   };
 
-  const handleViewClient = (clientId: number) => {
-    setSelectedClientId(clientId);
+  const handleViewClient = (client: Client) => {
+    setSelectedClient(client);
     setShowClientModal(true);
   };
 
   const handleCloseClientModal = () => {
     setShowClientModal(false);
-    setSelectedClientId(null);
   };
 
   const handleClientUpdated = () => {
-    fetchClients(); 
+    fetchClients();
   };
 
   return (
@@ -125,7 +124,7 @@ export default function ClientsInfo() {
                 <tr
                   key={client.id}
                   className="hover:bg-base-200 cursor-pointer transition-colors"
-                  onDoubleClick={() => handleViewClient(client.id)}
+                  onDoubleClick={() => handleViewClient(client)}
                   title="Doble click para ver detalles"
                 >
                   <th>{index + 1}</th>
@@ -153,14 +152,15 @@ export default function ClientsInfo() {
       {selectedClient && (
         <EditClient client={selectedClient} onSuccess={handleEditSuccess} />
       )}
-
-      <SpecificClient
-        clientId={selectedClientId}
-        isOpen={showClientModal}
-        onClose={handleCloseClientModal}
-        onDelete={handleClientUpdated}
-        onEdit={handleClientUpdated}
-      />
+      {selectedClient && (
+        <SpecificClient
+          client={selectedClient}
+          isOpen={showClientModal}
+          onClose={handleCloseClientModal}
+          onDelete={handleClientUpdated}
+          onEdit={handleClientUpdated}
+        />
+      )}
     </>
   );
 }

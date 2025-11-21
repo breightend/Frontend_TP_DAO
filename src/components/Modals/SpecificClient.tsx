@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 interface SpecificClientProps {
-  clientId: number | null;
+  client: Client;
   isOpen: boolean;
   onClose: () => void;
   onDelete?: () => void;
@@ -30,13 +30,13 @@ interface Client {
 }
 
 export default function SpecificClient({
-  clientId,
+  client,
   isOpen,
   onClose,
   onDelete,
   onEdit,
 }: SpecificClientProps) {
-  const [client, setClient] = useState<Client | null>(null);
+  //const [client, setClient] = useState<Client | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showEditModal, setShowEditModal] = useState(false);
@@ -69,7 +69,7 @@ export default function SpecificClient({
     if (!client?.id) return;
 
     const confirmDelete = window.confirm(
-      `¿Está seguro que desea eliminar al cliente ${client.nombre} ${client.apellido}?`
+      `¿Está seguro que desea eliminar al cliente ${client.nombre} ${client.apellido}?`,
     );
 
     if (!confirmDelete) return;
@@ -196,7 +196,7 @@ export default function SpecificClient({
                         </p>
                         <p className="font-semibold">
                           {new Date(client.fechaNacimiento).toLocaleDateString(
-                            "es-AR"
+                            "es-AR",
                           )}
                         </p>
                       </div>
